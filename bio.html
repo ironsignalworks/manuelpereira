@@ -159,7 +159,7 @@
     }
     .footnote{ font-size:.95rem; color:var(--ink-soft) }
 
-    /* Back-to-top chevron */
+    /* Back-to-top chevron (same as index + non-scrollable fallback) */
     #toTop{
       position:fixed;
       right:max(16px, env(safe-area-inset-right));
@@ -173,13 +173,11 @@
       box-shadow:0 6px 20px rgba(0,0,0,.08);
       color:var(--ink);
       cursor:pointer;
-      opacity:.95; /* visible by default when .show is present */
+      opacity:0; pointer-events:none;
       transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
       -webkit-tap-highlight-color: transparent;
-      pointer-events:auto;
     }
-    /* only used to align behavior with index; class added in HTML */
-    #toTop:not(.show){ opacity:0; pointer-events:none; }
+    #toTop.show{ opacity:.95; pointer-events:auto }
     #toTop:hover{ transform:translateY(-2px) }
     #toTop:active{ transform: translateY(0) scale(.98) }
     #toTop svg{ width:18px; height:18px }
@@ -193,7 +191,6 @@
       .page-hero .inner{ grid-template-columns:1fr; text-align:center }
       .hero-icon{ margin:0 auto }
       .bio-grid{ grid-template-columns:1fr }
-      .bio-figure{ justify-self:center }
       .bio-figure img{ width:min(88vw, 380px) }
       .footer-inner{ padding:18px }
       .socials{ flex-direction:column; align-items:flex-start; gap:8px; }
@@ -335,87 +332,121 @@
     </div>
   </footer>
 
-  <!-- Back-to-top chevron — now ALWAYS visible -->
-  <button id="toTop" class="show" type="button" aria-label="Voltar ao topo" title="Topo">
+  <!-- Back-to-top chevron -->
+  <button id="toTop" type="button" aria-label="Voltar ao topo" title="Topo">
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M6 14l6-6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </button>
 
   <script>
-    // Mobile menu
-    const burger = document.getElementById('menu-toggle');
-    const drawer = document.getElementById('mobile-nav');
-    function setMenu(open){
-      drawer.classList.toggle('open', open);
-      burger?.setAttribute('aria-expanded', open ? 'true' : 'false');
-      document.body.classList.toggle('nav-open', open);
-    }
-    burger?.addEventListener('click', ()=> setMenu(!drawer.classList.contains('open')));
-    document.addEventListener('keydown', e=>{ if(e.key==='Escape') setMenu(false); });
-    document.addEventListener('click', e=>{
-      if(!drawer?.classList.contains('open')) return;
-      const within = drawer.contains(e.target) || burger.contains(e.target);
-      if(!within) setMenu(false);
-    });
-    drawer?.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> setMenu(false)));
-
-    // Year + slim progress bar width
-    const bar  = document.getElementById('scrollbar');
-    const year = document.getElementById('year');
-    if (year) year.textContent = new Date().getFullYear();
-    window.addEventListener('scroll', () => {
-      if (!bar) return;
-      const el = document.scrollingElement || document.documentElement;
-      const max = Math.max(1, el.scrollHeight - el.clientHeight);
-      const s = el.scrollTop / max;
-      bar.style.width = (s*100).toFixed(2)+'%';
-    }, {passive:true});
-
-    // Tiny hero micro-parallax
-    (function(){
-      const icon = document.querySelector('.hero-icon');
-      if(!icon) return;
-      function tick(){
-        const r = icon.getBoundingClientRect();
-        const wh = innerHeight || document.documentElement.clientHeight;
-        const centerDist = (r.top + r.height/2) - (wh/2);
-        const norm = Math.max(-1, Math.min(1, centerDist / (wh/2)));
-        document.documentElement.style.setProperty('--hero-shift', (norm * -6).toFixed(1) + 'px');
-        document.documentElement.style.setProperty('--hero-alpha', (1 - Math.abs(norm)*0.2).toFixed(3));
-        requestAnimationFrame(tick);
+    /* =========================
+       Mobile menu
+    ========================= */
+    (function () {
+      const burger = document.getElementById('menu-toggle');
+      const drawer = document.getElementById('mobile-nav');
+    
+      function setMenu(open) {
+        if (!drawer || !burger) return;
+        drawer.classList.toggle('open', open);
+        burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+        document.body.classList.toggle('nav-open', open);
       }
-      requestAnimationFrame(tick);
+    
+      if (burger && drawer) {
+        burger.addEventListener('click', () => setMenu(!drawer.classList.contains('open')));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
+    
+        document.addEventListener('click', (e) => {
+          if (!drawer.classList.contains('open')) return;
+          const within = drawer.contains(e.target) || burger.contains(e.target);
+          if (!within) setMenu(false);
+        });
+    
+        drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+      }
     })();
-
-    // Back-to-top chevron click handler (always visible)
-    (function(){
+    
+    /* =========================
+       Year + top progress bar
+    ========================= */
+    (function () {
+      const bar  = document.getElementById('scrollbar');
+      const year = document.getElementById('year');
+    
+      if (year) year.textContent = new Date().getFullYear();
+    
+      function updateBar() {
+        if (!bar) return;
+        const el  = document.scrollingElement || document.documentElement;
+        const max = Math.max(1, el.scrollHeight - el.clientHeight);
+        const s   = el.scrollTop / max;
+        bar.style.width = (s * 100).toFixed(2) + '%';
+      }
+    
+      ['DOMContentLoaded','pageshow','load','scroll','resize','orientationchange']
+        .forEach(evt => window.addEventListener(evt, updateBar, { passive: true }));
+    
+      setTimeout(updateBar, 0);
+    })();
+    
+    /* =========================
+       Back-to-top chevron
+       - Shows only after threshold
+       - Smooth scroll to top on click
+    ========================= */
+    (function () {
       const toTop = document.getElementById('toTop');
-      if(!toTop) return;
-      function scrollToTop(){
+      if (!toTop) return;
+    
+      const THRESHOLD = 12; // px scrolled before showing
+    
+      function getScrollTop() {
+        const el = document.scrollingElement || document.documentElement;
+        return el.scrollTop || window.pageYOffset || 0;
+      }
+    
+      function toggleChevron() {
+        toTop.classList.toggle('show', getScrollTop() > THRESHOLD);
+      }
+    
+      function scrollToTop() {
         const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (!reduced && 'scrollBehavior' in document.documentElement.style){
+        if (!reduced && 'scrollBehavior' in document.documentElement.style) {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
           const el = document.scrollingElement || document.documentElement;
           el.scrollTop = 0; document.body.scrollTop = 0;
         }
       }
-      toTop.addEventListener('click', (e)=>{ e.preventDefault(); scrollToTop(); });
+    
+      toTop.addEventListener('click', (e) => { e.preventDefault(); scrollToTop(); });
+    
+      ['DOMContentLoaded','pageshow','load','scroll','resize','orientationchange']
+        .forEach(evt => window.addEventListener(evt, toggleChevron, { passive: true }));
+    
+      setTimeout(toggleChevron, 0);
     })();
-
-    // Touch/press feedback
-    (function(){
+    
+    /* =========================
+       Touch/press feedback on icon links
+    ========================= */
+    (function () {
       const links = document.querySelectorAll('.icon-link');
-      if(!links.length) return;
-      links.forEach(el=>{
-        const on = ()=> el.classList.add('is-pressed');
-        const off = ()=> el.classList.remove('is-pressed');
-        el.addEventListener('touchstart', on, {passive:true});
+      if (!links.length) return;
+    
+      links.forEach(el => {
+        const on  = () => el.classList.add('is-pressed');
+        const off = () => el.classList.remove('is-pressed');
+    
+        el.addEventListener('touchstart', on, { passive: true });
         el.addEventListener('mousedown', on);
-        ['touchend','touchcancel','mouseup','mouseleave','blur'].forEach(ev=> el.addEventListener(ev, off, {passive:true}));
+        ['touchend','touchcancel','mouseup','mouseleave','blur']
+          .forEach(ev => el.addEventListener(ev, off, { passive: true }));
       });
     })();
-  </script>
+    </script>
+    
 </body>
 </html>
