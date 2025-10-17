@@ -115,12 +115,12 @@
     .page-hero h1{ margin-bottom:6px }
     .breadcrumbs{ font-size:.92rem; color:var(--mute) }
 
-      /* Back-to-top chevron */
-      #toTop{
+    /* Back-to-top chevron */
+    #toTop{
       position:fixed;
       right:max(16px, env(safe-area-inset-right));
       bottom:max(16px, env(safe-area-inset-bottom));
-      z-index:2000;
+      z-index:2147483647;
       display:grid; place-items:center;
       width:42px; height:42px; border-radius:999px;
       border:1px solid var(--line);
@@ -166,31 +166,10 @@
     .footer-icon{
       display:block; margin:0 auto 10px auto; opacity:var(--icon-alpha,1);
       transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
-      transform:translateY(calc((1 - var(--icon-alpha,1)) * 8px)); width:48px; height:48px;
+      transform:translateY(calc((1 - var(--icon-alpha,1)) * 8px));
+      width:96px; height:96px; /* match other section icons */
     }
     .footnote{ font-size:.95rem; color:var(--ink-soft) }
-
-    /* Back-to-top chevron (hidden until scroll > 80px) */
-    #toTop{
-      position:fixed;
-      right: max(16px, env(safe-area-inset-right));
-      bottom: max(16px, env(safe-area-inset-bottom));
-      z-index: 2147483647;
-      display:grid; place-items:center;
-      width:42px; height:42px; border-radius:999px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.6);
-      backdrop-filter:saturate(120%) blur(3px);
-      box-shadow:0 6px 20px rgba(0,0,0,.08);
-      color:var(--ink);
-      cursor:pointer;
-      opacity:0; pointer-events:none;
-      transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
-      -webkit-tap-highlight-color: transparent;
-    }
-    #toTop.show{ opacity:.95; pointer-events:auto }
-    #toTop:hover{ transform:translateY(-2px) }
-    #toTop svg{ width:18px; height:18px }
 
     @media (max-width: 720px){
       :root{ --max: 92vw }
@@ -228,7 +207,6 @@
           <a href="/">Home</a>
           <a href="/#treat">Tratamentos</a>
           <a href="/#kintsugi">Filosofia</a>
-          <a href="/#space">Espaço</a>
           <a href="/#info">Info</a>
           <a href="/bio.html" aria-current="page">Biografia</a>
           <a href="/#contacto">Contacto</a>
@@ -245,7 +223,6 @@
         <a href="/">Home</a>
         <a href="/#treat">Tratamentos</a>
         <a href="/#kintsugi">Filosofia</a>
-        <a href="/#space">Espaço</a>
         <a href="/#info">Info</a>
         <a href="/bio.html" aria-current="page">Biografia</a>
         <a href="/#contacto">Contacto</a>
@@ -322,14 +299,14 @@
   <footer class="icon-fade">
     <div class="footer-inner">
       <a href="/" aria-label="Ir para a página inicial">
-        <img class="footer-icon" src="icon.svg" alt="Ícone" width="48" height="48" loading="lazy">
+        <img class="footer-icon" src="icon.svg" alt="Ícone" width="96" height="96" loading="lazy">
       </a>
       <div class="footnote">© <span id="year"></span> Manuel Pereira Shiatsu</div>
     </div>
   </footer>
 
- <!-- Back-to-top chevron -->
- <button id="toTop" type="button" aria-label="Voltar ao topo" title="Topo">
+  <!-- Back-to-top chevron -->
+  <button id="toTop" type="button" aria-label="Voltar ao topo" title="Topo">
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M6 14l6-6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -353,13 +330,19 @@
     });
     drawer?.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> setMenu(false)));
 
-    // --- Year + progress bar ---
+    // --- Year + (optional) progress bar width if you wire it up later ---
     const bar   = document.getElementById('scrollbar');
     const year  = document.getElementById('year');
     if (year) year.textContent = new Date().getFullYear();
+    window.addEventListener('scroll', () => {
+      if (!bar) return;
+      const h = document.documentElement;
+      const max = Math.max(1, h.scrollHeight - h.clientHeight);
+      const s = (h.scrollTop)/max;
+      bar.style.width = (s*100).toFixed(2)+'%';
+    }, {passive:true});
 
-
-    // Tiny hero micro-parallax (unchanged)
+    // Hero micro-parallax (unchanged)
     (function(){
       const icon = document.querySelector('.hero-icon');
       if(!icon) return;
@@ -375,8 +358,8 @@
       requestAnimationFrame(tick);
     })();
 
-        // ===== Back-to-top chevron (show after scroll) =====
-        const toTop = document.getElementById('toTop');
+    // Back-to-top chevron (same principle as index)
+    const toTop = document.getElementById('toTop');
     function getScrollTop(){
       return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
     }
