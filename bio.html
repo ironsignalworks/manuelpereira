@@ -11,7 +11,7 @@
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+Antique:wght@400;500&display=swap">
   <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+Antique:wght@400;500&display=swap" rel="stylesheet">
 
-  <!-- Preload key images -->
+  <!-- Preloads -->
   <link rel="preload" as="image" href="icon1.svg">
   <link rel="preload" as="image" href="logo.svg">
   <link rel="preload" as="image" href="3.webp" type="image/webp" imagesrcset="3.webp 1x, 3.jpg 1x" imagesizes="100vw">
@@ -55,6 +55,7 @@
     p{ margin:.35rem 0; color:var(--ink-soft) }
     .mute{ color:var(--mute) }
     small{ color:var(--mute) }
+
     a{
       color:var(--jade); text-decoration:none;
       background:linear-gradient(currentColor,currentColor) left 100%/0 1px no-repeat;
@@ -115,6 +116,45 @@
     .page-hero h1{ margin-bottom:6px }
     .breadcrumbs{ font-size:.92rem; color:var(--mute) }
 
+    .bio-grid{
+      display:grid; grid-template-columns:auto 1fr;
+      gap: clamp(16px, 5vw, 48px); align-items:start;
+    }
+    .bio-figure{ justify-self:start }
+    .bio-figure img{
+      width: clamp(150px, 30vw, 290px);
+      height: auto; object-fit: cover; border-radius: 12px; display:block;
+    }
+
+    /* Socials (match index) */
+    .socials{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+    .icon-link{
+      display:inline-flex; align-items:center; gap:10px; padding:4px 0;
+      border:none; background:transparent; border-radius:0; color:var(--ink);
+    }
+    .icon-link:hover{ color:var(--pine) }
+    .icon-link .icon{ width:18px; height:18px }
+
+    /* Footer */
+    footer{
+      position:relative; min-height:min(40vh, 420px);
+      display:grid; place-items:center; text-align:center; color:var(--ink);
+      background: image-set(url('4.webp') type('image/webp'), url('4.jpg') type('image/jpeg')) center 100% / cover no-repeat;
+    }
+    footer::before{
+      content:""; position:absolute; inset:0;
+      background:linear-gradient(180deg, rgba(200,200,143,.34), rgba(200,200,143,.62));
+      pointer-events:none;
+    }
+    .footer-inner{ position:relative; z-index:1; padding:24px; max-width:var(--max) }
+    .footer-icon{
+      display:block; margin:0 auto 10px auto; width:96px; height:96px;
+      opacity:var(--icon-alpha,1);
+      transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
+      transform:translateY(calc((1 - var(--icon-alpha,1)) * 8px));
+    }
+    .footnote{ font-size:.95rem; color:var(--ink-soft) }
+
     /* Back-to-top chevron */
     #toTop{
       position:fixed;
@@ -137,40 +177,7 @@
     #toTop:hover{ transform:translateY(-2px) }
     #toTop svg{ width:18px; height:18px }
 
-    .bio-grid{
-      display:grid;
-      grid-template-columns: auto 1fr;
-      gap: clamp(16px, 5vw, 48px);
-      align-items: start;
-    }
-    .bio-figure{ justify-self:start }
-    .bio-figure img{
-      width: clamp(150px, 30vw, 290px);
-      height: auto;
-      object-fit: cover;
-      border-radius: 12px;
-      display:block;
-    }
-
-    footer{
-      position:relative; min-height:min(40vh, 420px);
-      display:grid; place-items:center; text-align:center; color:var(--ink);
-      background: image-set(url('4.webp') type('image/webp'), url('4.jpg') type('image/jpeg')) center 100% / cover no-repeat;
-    }
-    footer::before{
-      content:""; position:absolute; inset:0;
-      background:linear-gradient(180deg, rgba(200,200,143,.34), rgba(200,200,143,.62));
-      pointer-events:none;
-    }
-    .footer-inner{ position:relative; z-index:1; padding:24px; max-width:var(--max) }
-    .footer-icon{
-      display:block; margin:0 auto 10px auto; opacity:var(--icon-alpha,1);
-      transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
-      transform:translateY(calc((1 - var(--icon-alpha,1)) * 8px));
-      width:96px; height:96px; /* match other section icons */
-    }
-    .footnote{ font-size:.95rem; color:var(--ink-soft) }
-
+    /* Mobile */
     @media (max-width: 720px){
       :root{ --max: 92vw }
       .flow{ padding-block:22px }
@@ -183,8 +190,13 @@
       .bio-figure{ justify-self:center }
       .bio-figure img{ width:min(88vw, 380px) }
       .footer-inner{ padding:18px }
+
+      /* stack socials like index */
+      .socials{ flex-direction:column; align-items:flex-start; gap:8px; }
+      .icon-link{ width:100%; padding:6px 0; }
     }
 
+    /* Reduced motion */
     @media (prefers-reduced-motion: reduce){
       html{ scroll-behavior:auto }
       .hero-icon, .footer-icon, .line-fade, #toTop{ transition:none }
@@ -203,15 +215,15 @@
           <small>Zen Shiatsu · TCM</small>
         </div>
 
-     <!-- Desktop nav -->
-<nav class="nav-inline desktop" aria-label="Navegação principal">
-    <a href="index.html" aria-current="page">Home</a>
-    <a href="index.html#treat">Tratamentos</a>
-    <a href="index.html#info">Preços &amp; Locais</a>
-    <a href="index.html#kintsugi">Filosofia</a>
-    <a href="bio.html">Biografia</a>
-    <a href="index.html#contacto">Contacto</a>
-  </nav>
+        <!-- Desktop nav (relative paths prevent 404s) -->
+        <nav class="nav-inline desktop" aria-label="Navegação principal">
+          <a href="index.html">Home</a>
+          <a href="index.html#treat">Tratamentos</a>
+          <a href="index.html#info">Preços &amp; Locais</a>
+          <a href="index.html#kintsugi">Filosofia</a>
+          <a href="bio.html" aria-current="page">Biografia</a>
+          <a href="index.html#contacto">Contacto</a>
+        </nav>
 
         <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu" aria-controls="mobile-nav" aria-expanded="false">
           <svg class="menu-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -220,20 +232,18 @@
         </button>
       </div>
 
-
-  
-  <!-- Mobile nav -->
-  <nav class="nav-inline mobile" id="mobile-nav" aria-label="Navegação principal móvel">
-    <a href="index.html" aria-current="page">Home</a>
-    <a href="index.html#treat">Tratamentos</a>
-    <a href="index.html#info">Preços &amp; Locais</a>
-    <a href="index.html#kintsugi">Filosofia</a>
-    <a href="bio.html">Biografia</a>
-    <a href="index.html#contacto">Contacto</a>
-  </nav>
-  
+      <!-- Mobile nav -->
+      <nav class="nav-inline mobile" id="mobile-nav" aria-label="Navegação principal móvel">
+        <a href="index.html">Home</a>
+        <a href="index.html#treat">Tratamentos</a>
+        <a href="index.html#info">Preços &amp; Locais</a>
+        <a href="index.html#kintsugi">Filosofia</a>
+        <a href="bio.html" aria-current="page">Biografia</a>
+        <a href="index.html#contacto">Contacto</a>
+      </nav>
     </header>
 
+    <!-- PAGE HERO -->
     <section class="page-hero flow" aria-label="Topo da página Biografia">
       <div class="inner">
         <img class="hero-icon" src="icon1.svg" alt="" aria-hidden="true">
@@ -246,20 +256,24 @@
       <div class="ink-line line-fade" aria-hidden="true"></div>
     </section>
 
+    <!-- BIO CONTENT -->
     <section id="bio" class="flow" aria-label="Biografia">
       <div class="bio-grid">
         <figure class="bio-figure">
           <img src="bio.webp" alt="Retrato de Manuel Pereira" loading="lazy" decoding="async">
         </figure>
+
         <div class="bio-text">
           <h2>Manuel Pereira</h2>
           <p>Nascido em Coimbra em 1984, com formação em Estudos Artísticos e Estudos Editoriais, tem procurado aprofundar, desde o relativamente tardio mas intenso encontro com o Shiatsu, um estudo pessoal em torno do vasto potencial que a Presença pelo Toque encerra.</p>
           <p>Dedicou-se neste último ano à formação em Massagem Desportiva e de Reabilitação, tendo como propósito a aproximação entre duas perspectivas e trajectos que considera complementares, como parte de um esforço continuado de busca de uma totalidade subtil.</p>
         </div>
       </div>
+
       <div class="ink-line line-fade" aria-hidden="true"></div>
     </section>
 
+    <!-- Info -->
     <section id="info" class="flow" aria-label="Informação">
       <div>
         <h2>Locais</h2>
@@ -274,27 +288,43 @@
       <div class="ink-line line-fade" aria-hidden="true"></div>
     </section>
 
+    <!-- Contact (same style as index) -->
     <section id="contacto" class="flow" aria-label="Contacto & Marcação">
       <div>
         <h2>Contacto &amp; Marcação</h2>
         <p><strong>Manuel Pereira</strong> — Terapeuta de Zen Shiatsu</p>
       </div>
 
-      <div class="socials" aria-label="Contactos e redes" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-        <a class="icon-link" href="tel:+351919973618" aria-label="Ligar 919 973 618" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><path d="M3 5c0-1.1.9-2 2-2h2a2 2 0 0 1 2 1.7l.3 1.7a2 2 0 0 1-.6 1.8L8 10a14 14 0 0 0 6 6l1.8-.7a2 2 0 0 1 1.8.2l1.6 1a2 2 0 0 1 .8 2l-.4 2a2 2 0 0 1-2 1.6C8.5 22.7 1.3 15.5 1 6a2 2 0 0 1 2-1Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="socials" aria-label="Contactos e redes">
+        <a class="icon-link" href="tel:+351919973618" aria-label="Ligar 919 973 618">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3 5c0-1.1.9-2 2-2h2a2 2 0 0 1 2 1.7l.3 1.7a2 2 0 0 1-.6 1.8L8 10a14 14 0 0 0 6 6l1.8-.7a2 2 0 0 1 1.8.2l1.6 1a2 2 0 0 1 .8 2l-.4 2a2 2 0 0 1-2 1.6C8.5 22.7 1.3 15.5 1 6a2 2 0 0 1 2-1Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
           <span>919&nbsp;973&nbsp;618</span>
         </a>
-        <a class="icon-link" href="mailto:manuelpereira.shiatsu@gmail.com" aria-label="Enviar email" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.5"/><path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+        <a class="icon-link" href="mailto:manuelpereira.shiatsu@gmail.com" aria-label="Enviar email">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.5"/>
+            <path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
           <span>Email</span>
         </a>
-        <a class="icon-link" href="https://instagram.com/manuelpereira.shiatsu" target="_blank" rel="noopener" aria-label="Instagram" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+
+        <a class="icon-link" href="https://instagram.com/manuelpereira.shiatsu" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+          </svg>
           <span>@manuelpereira.shiatsu</span>
         </a>
-        <a class="icon-link" href="https://maps.google.com/?q=Anjos+Lisboa" target="_blank" rel="noopener" aria-label="Ver no mapa" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg>
+
+        <a class="icon-link" href="https://maps.google.com/?q=Anjos+Lisboa" target="_blank" rel="noopener" aria-label="Ver no mapa">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
           <span>Anjos · Lisboa</span>
         </a>
       </div>
@@ -303,7 +333,7 @@
 
   <footer class="icon-fade">
     <div class="footer-inner">
-      <a href="/" aria-label="Ir para a página inicial">
+      <a href="index.html" aria-label="Ir para a página inicial">
         <img class="footer-icon" src="icon.svg" alt="Ícone" width="96" height="96" loading="lazy">
       </a>
       <div class="footnote">© <span id="year"></span> Manuel Pereira Shiatsu</div>
@@ -318,7 +348,7 @@
   </button>
 
   <script>
-    // --- Nav ---
+    // Mobile menu
     const burger = document.getElementById('menu-toggle');
     const drawer = document.getElementById('mobile-nav');
     function setMenu(open){
@@ -335,19 +365,19 @@
     });
     drawer?.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> setMenu(false)));
 
-    // --- Year + (optional) progress bar width if you wire it up later ---
-    const bar   = document.getElementById('scrollbar');
-    const year  = document.getElementById('year');
+    // Year + slim progress bar width (optional)
+    const bar  = document.getElementById('scrollbar');
+    const year = document.getElementById('year');
     if (year) year.textContent = new Date().getFullYear();
     window.addEventListener('scroll', () => {
       if (!bar) return;
-      const h = document.documentElement;
-      const max = Math.max(1, h.scrollHeight - h.clientHeight);
-      const s = (h.scrollTop)/max;
+      const el = document.scrollingElement || document.documentElement;
+      const max = Math.max(1, el.scrollHeight - el.clientHeight);
+      const s = el.scrollTop / max;
       bar.style.width = (s*100).toFixed(2)+'%';
     }, {passive:true});
 
-    // Hero micro-parallax (unchanged)
+    // Tiny hero micro-parallax
     (function(){
       const icon = document.querySelector('.hero-icon');
       if(!icon) return;
@@ -363,29 +393,46 @@
       requestAnimationFrame(tick);
     })();
 
-    // Back-to-top chevron (same principle as index)
-    const toTop = document.getElementById('toTop');
-    function getScrollTop(){
-      return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-    }
-    function toggleChevron(){
-      if (!toTop) return;
-      if (getScrollTop() > 120) toTop.classList.add('show');
-      else toTop.classList.remove('show');
-    }
-    window.addEventListener('scroll', toggleChevron, {passive:true});
-    window.addEventListener('load', toggleChevron, {once:true});
+    // --- Back-to-top chevron (robust across browsers/iOS) ---
+    (function(){
+      const toTop = document.getElementById('toTop');
+      if(!toTop) return;
 
-    function scrollToTop(){
-      const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!reduced && 'scrollBehavior' in document.documentElement.style){
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }else{
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
+      const THRESHOLD = 60; // px before showing
+
+      function getScrollTop(){
+        const el = document.scrollingElement || document.documentElement;
+        return el.scrollTop || 0;
       }
-    }
-    toTop?.addEventListener('click', (e)=>{ e.preventDefault(); scrollToTop(); });
+
+      function toggleChevron(){
+        if (getScrollTop() > THRESHOLD) {
+          toTop.classList.add('show');
+        } else {
+          toTop.classList.remove('show');
+        }
+      }
+
+      function scrollToTop(){
+        const reduced = window.matchMedia &&
+                        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!reduced && 'scrollBehavior' in document.documentElement.style){
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          const el = document.scrollingElement || document.documentElement;
+          el.scrollTop = 0;
+        }
+      }
+
+      toTop.addEventListener('click', (e) => { e.preventDefault(); scrollToTop(); });
+
+      ['load','scroll','resize','orientationchange'].forEach(evt => {
+        window.addEventListener(evt, toggleChevron, { passive:true });
+      });
+      document.addEventListener('touchmove', toggleChevron, { passive:true });
+
+      toggleChevron();
+    })();
   </script>
 </body>
 </html>
