@@ -52,9 +52,8 @@
       --dur: 700ms;
       --fast: 200ms;
 
-      /* Scroll-driven */
-      --hero-alpha: 0;  /* 0→1 fade in hero content (right / below on mobile) */
-      --hero-out: 0;    /* 0→1 fade out at end of hero */
+      --hero-alpha: 0;
+      --hero-out: 0;
     }
 
     *,*::before,*::after{ box-sizing:border-box }
@@ -84,7 +83,7 @@
 
     .wrap{ width:var(--max); margin-inline:auto; position:relative }
     .flow{ padding-block:clamp(22px, 6vw, 68px) }
-    header{ padding-block:10px } /* tight header */
+    header{ padding-block:10px } /* matches bio */
     section{ position:relative }
 
     .brand{ display:flex; justify-content:space-between; gap:18px; align-items:flex-end; flex-wrap:wrap }
@@ -123,35 +122,26 @@
       will-change:opacity, transform;
     }
 
-    /* ===== STICKY INTRO→HERO REGION ===== */
-    .stage{
-      position:relative; height:210vh;
-      margin-top:0;
-    }
-    .sticky{
-      position:sticky; top:0; height:100vh;
-      display:block; overflow:hidden;
-    }
+    /* ===== STICKY INTRO→HERO ===== */
+    .stage{ position:relative; height:210vh; margin-top:0; }
+    .sticky{ position:sticky; top:0; height:100vh; display:block; overflow:hidden; }
     .split{
       display:grid; grid-template-columns:minmax(220px, 0.9fr) 1.1fr; gap:clamp(16px, 5vw, 48px);
       align-items:center; width:100%; height:100%;
-      padding-inline:6vw;
-      max-width:var(--max); margin-inline:auto;
+      padding-inline:6vw; max-width:var(--max); margin-inline:auto;
     }
 
-    /* Left: ICON — pinned, fades out with hero as we enter content */
     .icon-left{
       justify-self:start;
       width:clamp(140px, 30vw, 380px);
       max-height:calc(100vh - 80px);
       object-fit:contain;
-      opacity:calc(1 - var(--hero-out)); /* fade with hero-out */
+      opacity:calc(1 - var(--hero-out));
       transform:translateY(calc(var(--hero-out) * -8px));
       transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
       will-change:opacity, transform;
     }
 
-    /* Right (desktop) / Below (mobile): HERO COPY — fades in, then out */
     .hero-copy{
       opacity:calc(var(--hero-alpha) * (1 - var(--hero-out)));
       transform:
@@ -163,7 +153,6 @@
       text-align:left;
     }
 
-    /* Quiet dividers */
     .divider{ display:grid; place-items:center; padding-block:22px }
     .divider img{
       width:96px; height:96px; display:block;
@@ -172,7 +161,7 @@
     }
     .divider.in img{ opacity:1; transform:translateY(0) }
 
-    /* Footer */
+    /* Footer — super-subtle hover */
     footer{
       position:relative; min-height:min(56vh, 520px);
       display:grid; place-items:center; text-align:center; color:var(--ink);
@@ -187,23 +176,27 @@
     .footer-inner{ position:relative; z-index:1; padding:24px; max-width:var(--max) }
     .footer-icon{
       display:block; margin:0 auto 10px auto;
-      opacity:0; transform:translateY(8px);
-      transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
-      width:96px; height:96px; /* match divider icon size */
+      width:96px; height:96px;
+      opacity:1; transform:translateY(0);
+      transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease), filter var(--fast) var(--ease);
+      transform-origin:50% 80%;
     }
-    footer.in .footer-icon{ opacity:1; transform:translateY(0) }
-    /* .footer-line removed per request */
+    /* toned-down hover: tiny nudge, almost no rotation/scale */
+    a:hover .footer-icon,
+    a:focus .footer-icon{
+      transform: translateY(-1px) rotate(-0.5deg) scale(1.01);
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,.06));
+    }
     .footnote{ font-size:.95rem; color:var(--ink-soft) }
     .footer-quote{ margin:14px auto 0 auto; line-height:1.8; color:var(--ink-soft); max-width:50ch; white-space:pre-line }
 
-    /* Socials (no pills) */
-    .socials{
-      display:flex; gap:12px; flex-wrap:wrap; align-items:center;
-    }
+    /* Socials */
+    .socials{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
     .icon-link{
       display:inline-flex; align-items:center; gap:10px; padding:4px 0;
       border:none; background:transparent; border-radius:0;
       color:var(--ink);
+      transition:opacity var(--fast) var(--ease);
     }
     .icon-link:hover{ color:var(--pine) }
     .icon-link .icon{ width:18px; height:18px }
@@ -213,7 +206,7 @@
       position:fixed;
       right:max(16px, env(safe-area-inset-right));
       bottom:max(16px, env(safe-area-inset-bottom));
-      z-index:2000;
+      z-index:2147483647;
       display:grid; place-items:center;
       width:42px; height:42px; border-radius:999px;
       border:1px solid var(--line);
@@ -223,20 +216,44 @@
       color:var(--ink);
       cursor:pointer;
       opacity:0; pointer-events:none;
-      transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
+      transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
       -webkit-tap-highlight-color: transparent;
     }
     #toTop.show{ opacity:.95; pointer-events:auto }
     #toTop:hover{ transform:translateY(-2px) }
+    #toTop:active{ transform: translateY(0) scale(.98) }
     #toTop svg{ width:18px; height:18px }
 
-    /* Content sections */
     .content .flow{ padding-block:clamp(28px, 7vw, 72px) }
 
-    /* Mobile tweaks — HERO surfaces from below icon */
+    .icon-link .icon{
+      transition: transform var(--fast) var(--ease),
+                  opacity var(--fast) var(--ease),
+                  filter var(--fast) var(--ease);
+      transform-origin:center;
+    }
+    .icon-link:hover .icon,
+    .icon-link:focus .icon,
+    .icon-link.is-pressed .icon{
+      transform: translateY(-1px) scale(1.06);
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,.08));
+    }
+    .icon-link span{
+      transition: transform var(--fast) var(--ease), opacity var(--fast) var(--ease);
+    }
+    .icon-link:hover span,
+    .icon-link:focus span,
+    .icon-link.is-pressed span{
+      transform: translateY(-1px);
+      opacity:.95;
+    }
+    .hero-icon,
+    .icon-left{ transition: transform var(--fast) var(--ease), opacity var(--fast) var(--ease); }
+    .icon-left:hover{ transform: translateY(-3px) scale(1.01); }
+
     @media (max-width: 720px){
       .flow{ padding-block:22px }
-      header{ padding-block:8px }
+      header{ padding-block:10px }
       .nav-inline.desktop{ display:none }
       .menu-toggle{ display:block }
 
@@ -249,14 +266,9 @@
         justify-items:center;
         padding-inline:5vw
       }
-      .icon-left{
-        width:min(70vw, 420px);
-        max-height:52svh;
-        justify-self:center;
-      }
+      .icon-left{ width:min(70vw, 420px); max-height:52svh; justify-self:center; }
       .hero-copy{
         text-align:center;
-        /* stronger “rise from below” motion on mobile */
         transform:
           translateY(calc((1 - var(--hero-alpha)) * 28px))
           scale(calc(0.985 + var(--hero-alpha) * 0.015))
@@ -265,109 +277,13 @@
       .only-mobile{ display:block }
       .footer-inner{ padding:18px }
       .footer-quote{ max-width:68ch }
-
-      /* Stack socials/contacts one per line on mobile */
-      .socials{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:8px;
-      }
-      .icon-link{
-        width:100%;
-        padding:6px 0;
-      }
+      .socials{ flex-direction:column; align-items:flex-start; gap:8px; }
+      .icon-link{ width:100%; padding:6px 0; }
     }
-/* === Micro-interactions (icons & section marks) === */
 
-/* Social/contact icons */
-.icon-link .icon{
-  transition: transform var(--fast) var(--ease),
-              opacity var(--fast) var(--ease),
-              filter var(--fast) var(--ease);
-  transform-origin: center;
-}
-.icon-link:hover .icon,
-.icon-link:focus .icon,
-.icon-link.is-pressed .icon{
-  transform: translateY(-1px) scale(1.06);
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,.08));
-}
-
-/* Nudge the label a touch on hover/focus/press */
-.icon-link span{
-  transition: transform var(--fast) var(--ease), opacity var(--fast) var(--ease);
-}
-.icon-link:hover span,
-.icon-link:focus span,
-.icon-link.is-pressed span{
-  transform: translateY(-1px);
-  opacity: .95;
-}
-
-/* Divider icons: pop slightly when revealed (your .in class is already applied) */
-@keyframes pop-in {
-  from { transform: translateY(8px) scale(.98); opacity: 0; }
-  to   { transform: translateY(0) scale(1); opacity: 1; }
-}
-.divider.in img{
-  animation: pop-in 360ms var(--ease) both;
-}
-
-/* Footer logo: gentle “breathe” when footer appears */
-@keyframes breathe {
-  0%   { transform: translateY(6px) scale(.98); opacity:.0; }
-  40%  { opacity:1; }
-  60%  { transform: translateY(0) scale(1.02); }
-  100% { transform: translateY(0) scale(1); }
-}
-footer.in .footer-icon{
-  animation: breathe 2000ms var(--ease) 1 both;
-}
-
-/* Footer logo hover/focus: tiny tilt */
-.footer-icon{
-  transition: transform var(--fast) var(--ease), opacity var(--fast) var(--ease), filter var(--fast) var(--ease);
-  transform-origin: 50% 80%;
-}
-a:hover .footer-icon,
-a:focus .footer-icon{
-  transform: translateY(-2px) rotate(-1deg) scale(1.03);
-  filter: drop-shadow(0 4px 10px rgba(0,0,0,.08));
-}
-
-/* Hero icon (bio) & left icon (index): tiny hover lift on desktop */
-.hero-icon,
-.icon-left{
-  transition: transform var(--fast) var(--ease), opacity var(--fast) var(--ease);
-}
-.hero-icon:hover,
-.icon-left:hover{
-  transform: translateY(-3px) scale(1.01);
-}
-
-/* Back-to-top chevron: tactile hover */
-#toTop{
-  transition: opacity var(--fast) var(--ease), transform var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
-}
-#toTop:hover{ transform: translateY(-2px) }
-#toTop:active{ transform: translateY(0) scale(.98) }
-
-/* Respect reduced motion */
-@media (prefers-reduced-motion: reduce){
-  .icon-link .icon,
-  .icon-link span,
-  .divider.in img,
-  footer.in .footer-icon,
-  .footer-icon,
-  .hero-icon,
-  .icon-left,
-  #toTop{ transition:none; animation:none }
-}
-
-    /* Reduced motion */
     @media (prefers-reduced-motion: reduce){
       html{ scroll-behavior:auto }
-      .hero-copy, .icon-left, .divider img, .footer-icon, .line-fade, #toTop{ transition:none }
+      .hero-copy, .icon-left, .footer-icon, .line-fade, #toTop{ transition:none }
     }
   </style>
 </head>
@@ -398,15 +314,15 @@ a:focus .footer-icon{
       </button>
     </div>
 
-<!-- Mobile nav -->
-<nav class="nav-inline mobile" id="mobile-nav" aria-label="Navegação principal móvel">
-  <a href="index.html" aria-current="page">Home</a>
-  <a href="index.html#treat">Tratamentos</a>
-  <a href="index.html#info">Preços &amp; Locais</a>
-  <a href="index.html#kintsugi">Filosofia</a>
-  <a href="bio.html">Biografia</a>
-  <a href="index.html#contacto">Contacto</a>
-</nav>
+    <!-- Mobile nav -->
+    <nav class="nav-inline mobile" id="mobile-nav" aria-label="Navegação principal móvel">
+      <a href="index.html" aria-current="page">Home</a>
+      <a href="index.html#treat">Tratamentos</a>
+      <a href="index.html#info">Preços &amp; Locais</a>
+      <a href="index.html#kintsugi">Filosofia</a>
+      <a href="bio.html">Biografia</a>
+      <a href="index.html#contacto">Contacto</a>
+    </nav>
   </header>
 
   <main>
@@ -414,10 +330,7 @@ a:focus .footer-icon{
     <section class="stage" id="stage">
       <div class="sticky">
         <div class="split">
-          <!-- Icon -->
           <img class="icon-left" src="icon1.svg" alt="Símbolo" loading="eager" decoding="async">
-
-          <!-- Hero copy (rises from below on mobile) -->
           <div class="hero-copy">
             <h1>Toque que acalma.</h1>
             <p class="mute">Respiração. Meridianos. Presença.</p>
@@ -425,10 +338,9 @@ a:focus .footer-icon{
           </div>
         </div>
       </div>
-      <!-- (no ink-line under hero) -->
     </section>
 
-    <!-- CONTENT AFTER HERO -->
+    <!-- CONTENT -->
     <div class="content wrap">
       <div class="divider"><img src="icon2.svg" alt="" width="96" height="96" loading="lazy"></div>
 
@@ -482,7 +394,6 @@ a:focus .footer-icon{
           <p><strong>Manuel Pereira</strong> — Terapeuta de Zen Shiatsu</p>
         </div>
 
-        <!-- Socials -->
         <div class="socials" aria-label="Contactos e redes">
           <a class="icon-link" href="tel:+351919973618" aria-label="Ligar 919 973 618">
             <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -524,11 +435,9 @@ a:focus .footer-icon{
   <!-- Footer -->
   <footer>
     <div class="footer-inner">
-      <!-- Footer icon links to home and matches 96×96 -->
-      <a href="/" aria-label="Ir para a página inicial">
+      <a href="index.html" aria-label="Ir para a página inicial">
         <img class="footer-icon" src="icon.svg" alt="Ícone" width="96" height="96" loading="lazy">
       </a>
-      <!-- footer line removed -->
       <div class="footnote">© <span id="year"></span> Manuel Pereira Shiatsu</div>
       <div class="ink-line line-fade" aria-hidden="true"></div>
       <div class="footer-quote">
@@ -547,13 +456,12 @@ Vasco Gato “Imo”
     </svg>
   </button>
 
-  <!-- (Optional) scroll hint; it fades out automatically -->
   <div id="scrollhint" class="mute" style="position:fixed; right:16px; bottom:16px; font-size:.85rem; opacity:.7; backdrop-filter:blur(2px); background:rgba(255,255,255,.35); padding:6px 10px; border-radius:999px">Scroll</div>
 
   <script>
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // ===== Mobile menu (with background scroll lock) =====
+    // Mobile menu
     const burger = document.getElementById('menu-toggle');
     const drawer = document.getElementById('mobile-nav');
     function setMenu(open){
@@ -570,7 +478,7 @@ Vasco Gato “Imo”
     });
     drawer?.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> setMenu(false)));
 
-    // ===== Progress bar + hint + year =====
+    // Progress bar + hint + year
     const bar   = document.getElementById('scrollbar');
     const hint  = document.getElementById('scrollhint');
     const year  = document.getElementById('year');
@@ -578,17 +486,16 @@ Vasco Gato “Imo”
 
     let hinted = false;
     window.addEventListener('scroll', () => {
-      const h = document.documentElement;
-      const max = Math.max(1, h.scrollHeight - h.clientHeight);
-      const s = (h.scrollTop)/max;
+      const el = document.scrollingElement || document.documentElement;
+      const max = Math.max(1, el.scrollHeight - el.clientHeight);
+      const s = el.scrollTop / max;
       if (bar) bar.style.width = (s*100).toFixed(2)+'%';
-      if (!hinted && h.scrollTop > 24 && hint){ hinted = true; hint.style.opacity = 0; setTimeout(()=>hint.remove(), 400); }
+      if (!hinted && el.scrollTop > 24 && hint){ hinted = true; hint.style.opacity = 0; setTimeout(()=>hint.remove(), 400); }
     }, {passive:true});
 
-    // ===== Scroll timeline for hero (works for desktop + mobile layout) =====
+    // Scroll timeline
     const root = document.documentElement;
     const stage = document.getElementById('stage');
-
     function clamp01(v){ return Math.max(0, Math.min(1, v)); }
     function stageProgress(el){
       const r = el.getBoundingClientRect();
@@ -597,7 +504,6 @@ Vasco Gato “Imo”
       const seen = -r.top;
       return total <= 0 ? 1 : seen / total;
     }
-
     function applyTimeline(){
       if (prefersReduced){
         root.style.setProperty('--hero-alpha', '1');
@@ -606,13 +512,12 @@ Vasco Gato “Imo”
       }
       if (stage){
         const p = clamp01(stageProgress(stage));
-        const heroAlpha = clamp01((p - 0.10) / 0.55);  // 10–65%: fade/slide in
-        const heroOut   = clamp01((p - 0.75) / 0.25);  // 75–100%: fade out
+        const heroAlpha = clamp01((p - 0.10) / 0.55);
+        const heroOut   = clamp01((p - 0.75) / 0.25);
         root.style.setProperty('--hero-alpha', heroAlpha.toFixed(3));
         root.style.setProperty('--hero-out',   heroOut.toFixed(3));
       }
     }
-
     let ticking = false;
     function requestUpdate(){
       if (ticking) return;
@@ -623,59 +528,54 @@ Vasco Gato “Imo”
     window.addEventListener('resize', requestUpdate);
     document.addEventListener('DOMContentLoaded', requestUpdate);
 
-    // ===== Quiet fades for dividers/footer =====
+    // Intersection reveals
     const io = ('IntersectionObserver' in window) ? new IntersectionObserver((entries)=>{
-      for(const e of entries){
-        if (e.isIntersecting) e.target.classList.add('in');
-        else e.target.classList.remove('in');
-      }
+      for(const e of entries){ e.target.classList.toggle('in', e.isIntersecting); }
     }, {root:null, rootMargin:'0px 0px -10% 0px', threshold:0.2}) : null;
+    if (io){ document.querySelectorAll('.divider, footer').forEach(el=> io.observe(el)); }
+    else   { document.querySelectorAll('.divider, footer').forEach(el=> el.classList.add('in')); }
 
-    if (io){
-      document.querySelectorAll('.divider, footer').forEach(el=> io.observe(el));
-    }else{
-      document.querySelectorAll('.divider, footer').forEach(el=> el.classList.add('in'));
-    }
-
-    // ===== Back-to-top chevron (show after scroll) =====
-    const toTop = document.getElementById('toTop');
-    function getScrollTop(){
-      return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-    }
-    function toggleChevron(){
-      if (!toTop) return;
-      if (getScrollTop() > 120) toTop.classList.add('show');
-      else toTop.classList.remove('show');
-    }
-    window.addEventListener('scroll', toggleChevron, {passive:true});
-    window.addEventListener('load', toggleChevron, {once:true});
-
-    function scrollToTop(){
-      const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!reduced && 'scrollBehavior' in document.documentElement.style){
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }else{
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
+    // Back-to-top chevron (lower threshold + initial toggle)
+    (function(){
+      const toTop = document.getElementById('toTop');
+      if(!toTop) return;
+      const THRESHOLD = 12; // show sooner
+      function getScrollTop(){
+        const el = document.scrollingElement || document.documentElement;
+        return el.scrollTop || window.pageYOffset || 0;
       }
-    }
-    toTop?.addEventListener('click', (e)=>{ e.preventDefault(); scrollToTop(); });
-    // Touch/press feedback for icon links (so mobile gets the same delight)
-(function(){
-  const links = document.querySelectorAll('.icon-link');
-  if(!links.length) return;
-  links.forEach(el=>{
-    const on = ()=> el.classList.add('is-pressed');
-    const off = ()=> el.classList.remove('is-pressed');
+      function toggleChevron(){
+        if (getScrollTop() > THRESHOLD) toTop.classList.add('show');
+        else toTop.classList.remove('show');
+      }
+      function scrollToTop(){
+        const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!reduced && 'scrollBehavior' in document.documentElement.style){
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          const el = document.scrollingElement || document.documentElement;
+          el.scrollTop = 0; document.body.scrollTop = 0;
+        }
+      }
+      toTop.addEventListener('click', (e)=>{ e.preventDefault(); scrollToTop(); });
+      ['DOMContentLoaded','load','scroll','resize','orientationchange'].forEach(evt=>{
+        window.addEventListener(evt, toggleChevron, {passive:true});
+      });
+      // ensure correct state after initial paint
+      setTimeout(toggleChevron, 0);
+    })();
 
-    el.addEventListener('touchstart', on, {passive:true});
-    el.addEventListener('mousedown', on);
-    ['touchend','touchcancel','mouseup','mouseleave','blur'].forEach(ev=>{
-      el.addEventListener(ev, off, {passive:true});
-    });
-  });
-})();
-
+    // Touch/press feedback
+    (function(){
+      const links = document.querySelectorAll('.icon-link');
+      links.forEach(el=>{
+        const on = ()=> el.classList.add('is-pressed');
+        const off = ()=> el.classList.remove('is-pressed');
+        el.addEventListener('touchstart', on, {passive:true});
+        el.addEventListener('mousedown', on);
+        ['touchend','touchcancel','mouseup','mouseleave','blur'].forEach(ev=> el.addEventListener(ev, off, {passive:true}));
+      });
+    })();
   </script>
 </body>
 </html>
