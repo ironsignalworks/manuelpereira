@@ -11,10 +11,9 @@
   <meta name="theme-color" content="#c8c88f" />
 
   <!-- Favicons / Preloads -->
+  <link rel="preload" as="image" href="icon1.svg">
+  <link rel="preload" as="image" href="logo.svg">
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-  <link rel="preload" as="image" href="icon1.svg" />
-  <link rel="preload" as="image" href="logo.svg" />
-  <link rel="preload" as="image" href="3.jpg" />
 
   <!-- OG / Twitter -->
   <meta property="og:type" content="website" />
@@ -22,7 +21,7 @@
   <meta property="og:title" content="Manuel Pereira Shiatsu — Zen Shiatsu" />
   <meta property="og:description" content="Shiatsu enraizado em TCM. Toque antigo, calma moderna." />
   <meta property="og:url" content="https://manuelpereira-shiatsu.example/" />
-  <meta property="og:image" content="https://manuelpereira-s hiatsu.example/og-1200x630.jpg" />
+  <meta property="og:image" content="https://manuelpereira-shiatsu.example/og-1200x630.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
 
   <!-- Font -->
@@ -30,6 +29,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+Antique:wght@400;500&display=swap">
   <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+Antique:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Preload images -->
+  <link rel="preload" as="image" href="icon1.svg">
+  <link rel="preload" as="image" href="logo.svg">
+  <link rel="preload" as="image" href="3.jpg">
 
   <style>
     :root{
@@ -80,7 +84,7 @@
 
     .wrap{ width:var(--max); margin-inline:auto; position:relative }
     .flow{ padding-block:clamp(22px, 6vw, 68px) }
-    header{ padding-block:10px }
+    header{ padding-block:10px } /* tight header */
     section{ position:relative }
 
     .brand{ display:flex; justify-content:space-between; gap:18px; align-items:flex-end; flex-wrap:wrap }
@@ -95,6 +99,7 @@
     }
     .nav-inline a:hover::after{ transform:scaleX(1) }
 
+    /* Mobile hamburger */
     .menu-toggle{ display:none; border:0; background:transparent; padding:8px; margin:-8px -8px -8px 0; border-radius:10px }
     .menu-toggle:focus-visible{ outline:2px solid rgba(0,0,0,.2); outline-offset:2px }
     .menu-icon{ width:26px; height:26px; display:inline-block }
@@ -119,23 +124,34 @@
     }
 
     /* ===== STICKY INTRO→HERO REGION ===== */
-    .stage{ position:relative; height:210vh }
-    .sticky{ position:sticky; top:0; height:100vh; display:block; overflow:hidden }
+    .stage{
+      position:relative; height:210vh;
+      margin-top:0;
+    }
+    .sticky{
+      position:sticky; top:0; height:100vh;
+      display:block; overflow:hidden;
+    }
     .split{
       display:grid; grid-template-columns:minmax(220px, 0.9fr) 1.1fr; gap:clamp(16px, 5vw, 48px);
-      align-items:center; width:100%; height:100%; padding-inline:6vw;
+      align-items:center; width:100%; height:100%;
+      padding-inline:6vw;
       max-width:var(--max); margin-inline:auto;
     }
 
+    /* Left: ICON — pinned, fades out with hero as we enter content */
     .icon-left{
-      justify-self:start; width:clamp(140px, 30vw, 380px);
-      max-height:calc(100vh - 80px); object-fit:contain;
-      opacity:calc(1 - var(--hero-out));
+      justify-self:start;
+      width:clamp(140px, 30vw, 380px);
+      max-height:calc(100vh - 80px);
+      object-fit:contain;
+      opacity:calc(1 - var(--hero-out)); /* fade with hero-out */
       transform:translateY(calc(var(--hero-out) * -8px));
       transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
       will-change:opacity, transform;
     }
 
+    /* Right (desktop) / Below (mobile): HERO COPY — fades in, then out */
     .hero-copy{
       opacity:calc(var(--hero-alpha) * (1 - var(--hero-out)));
       transform:
@@ -147,6 +163,7 @@
       text-align:left;
     }
 
+    /* Quiet dividers */
     .divider{ display:grid; place-items:center; padding-block:22px }
     .divider img{
       width:96px; height:96px; display:block;
@@ -155,6 +172,7 @@
     }
     .divider.in img{ opacity:1; transform:translateY(0) }
 
+    /* Footer */
     footer{
       position:relative; min-height:min(56vh, 520px);
       display:grid; place-items:center; text-align:center; color:var(--ink);
@@ -168,19 +186,29 @@
     }
     .footer-inner{ position:relative; z-index:1; padding:24px; max-width:var(--max) }
     .footer-icon{
-      display:block; margin:0 auto 10px auto; width:96px; height:96px;
+      display:block; margin:0 auto 10px auto;
       opacity:0; transform:translateY(8px);
       transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
+      width:96px; height:96px; /* match divider icon size */
     }
     footer.in .footer-icon{ opacity:1; transform:translateY(0) }
+    /* .footer-line removed per request */
     .footnote{ font-size:.95rem; color:var(--ink-soft) }
     .footer-quote{ margin:14px auto 0 auto; line-height:1.8; color:var(--ink-soft); max-width:50ch; white-space:pre-line }
 
-    .socials{ display:flex; gap:12px; flex-wrap:wrap; align-items:center }
-    .icon-link{ display:inline-flex; align-items:center; gap:10px; padding:4px 0; border:none; background:transparent; color:var(--ink) }
+    /* Socials (no pills) */
+    .socials{
+      display:flex; gap:12px; flex-wrap:wrap; align-items:center;
+    }
+    .icon-link{
+      display:inline-flex; align-items:center; gap:10px; padding:4px 0;
+      border:none; background:transparent; border-radius:0;
+      color:var(--ink);
+    }
     .icon-link:hover{ color:var(--pine) }
     .icon-link .icon{ width:18px; height:18px }
 
+    /* Back-to-top chevron */
     #toTop{
       position:fixed;
       right:max(16px, env(safe-area-inset-right));
@@ -202,8 +230,10 @@
     #toTop:hover{ transform:translateY(-2px) }
     #toTop svg{ width:18px; height:18px }
 
+    /* Content sections */
     .content .flow{ padding-block:clamp(28px, 7vw, 72px) }
 
+    /* Mobile tweaks — HERO surfaces from below icon */
     @media (max-width: 720px){
       .flow{ padding-block:22px }
       header{ padding-block:8px }
@@ -212,12 +242,21 @@
 
       .stage{ height:240vh }
       .split{
-        grid-template-columns:1fr; grid-auto-rows:auto; gap:12px;
-        align-items:center; justify-items:center; padding-inline:5vw
+        grid-template-columns:1fr;
+        grid-auto-rows:auto;
+        gap:12px;
+        align-items:center;
+        justify-items:center;
+        padding-inline:5vw
       }
-      .icon-left{ width:min(70vw, 420px); max-height:52svh; justify-self:center }
+      .icon-left{
+        width:min(70vw, 420px);
+        max-height:52svh;
+        justify-self:center;
+      }
       .hero-copy{
         text-align:center;
+        /* stronger “rise from below” motion on mobile */
         transform:
           translateY(calc((1 - var(--hero-alpha)) * 28px))
           scale(calc(0.985 + var(--hero-alpha) * 0.015))
@@ -227,10 +266,105 @@
       .footer-inner{ padding:18px }
       .footer-quote{ max-width:68ch }
 
-      .socials{ flex-direction:column; align-items:flex-start; gap:8px }
-      .icon-link{ width:100%; padding:6px 0 }
+      /* Stack socials/contacts one per line on mobile */
+      .socials{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+      }
+      .icon-link{
+        width:100%;
+        padding:6px 0;
+      }
     }
+/* === Micro-interactions (icons & section marks) === */
 
+/* Social/contact icons */
+.icon-link .icon{
+  transition: transform var(--fast) var(--ease),
+              opacity var(--fast) var(--ease),
+              filter var(--fast) var(--ease);
+  transform-origin: center;
+}
+.icon-link:hover .icon,
+.icon-link:focus .icon,
+.icon-link.is-pressed .icon{
+  transform: translateY(-1px) scale(1.06);
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.08));
+}
+
+/* Nudge the label a touch on hover/focus/press */
+.icon-link span{
+  transition: transform var(--fast) var(--ease), opacity var(--fast) var(--ease);
+}
+.icon-link:hover span,
+.icon-link:focus span,
+.icon-link.is-pressed span{
+  transform: translateY(-1px);
+  opacity: .95;
+}
+
+/* Divider icons: pop slightly when revealed (your .in class is already applied) */
+@keyframes pop-in {
+  from { transform: translateY(8px) scale(.98); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+.divider.in img{
+  animation: pop-in 360ms var(--ease) both;
+}
+
+/* Footer logo: gentle “breathe” when footer appears */
+@keyframes breathe {
+  0%   { transform: translateY(6px) scale(.98); opacity:.0; }
+  40%  { opacity:1; }
+  60%  { transform: translateY(0) scale(1.02); }
+  100% { transform: translateY(0) scale(1); }
+}
+footer.in .footer-icon{
+  animation: breathe 2000ms var(--ease) 1 both;
+}
+
+/* Footer logo hover/focus: tiny tilt */
+.footer-icon{
+  transition: transform var(--fast) var(--ease), opacity var(--fast) var(--ease), filter var(--fast) var(--ease);
+  transform-origin: 50% 80%;
+}
+a:hover .footer-icon,
+a:focus .footer-icon{
+  transform: translateY(-2px) rotate(-1deg) scale(1.03);
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,.08));
+}
+
+/* Hero icon (bio) & left icon (index): tiny hover lift on desktop */
+.hero-icon,
+.icon-left{
+  transition: transform var(--fast) var(--ease), opacity var(--fast) var(--ease);
+}
+.hero-icon:hover,
+.icon-left:hover{
+  transform: translateY(-3px) scale(1.01);
+}
+
+/* Back-to-top chevron: tactile hover */
+#toTop{
+  transition: opacity var(--fast) var(--ease), transform var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
+}
+#toTop:hover{ transform: translateY(-2px) }
+#toTop:active{ transform: translateY(0) scale(.98) }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .icon-link .icon,
+  .icon-link span,
+  .divider.in img,
+  footer.in .footer-icon,
+  .footer-icon,
+  .hero-icon,
+  .icon-left,
+  #toTop{ transition:none; animation:none }
+}
+
+    /* Reduced motion */
     @media (prefers-reduced-motion: reduce){
       html{ scroll-behavior:auto }
       .hero-copy, .icon-left, .divider img, .footer-icon, .line-fade, #toTop{ transition:none }
@@ -264,15 +398,15 @@
       </button>
     </div>
 
-    <!-- Mobile nav -->
-    <nav class="nav-inline mobile" id="mobile-nav" aria-label="Navegação principal móvel">
-      <a href="index.html" aria-current="page">Home</a>
-      <a href="index.html#treat">Tratamentos</a>
-      <a href="index.html#info">Preços &amp; Locais</a>
-      <a href="index.html#kintsugi">Filosofia</a>
-      <a href="bio.html">Biografia</a>
-      <a href="index.html#contacto">Contacto</a>
-    </nav>
+<!-- Mobile nav -->
+<nav class="nav-inline mobile" id="mobile-nav" aria-label="Navegação principal móvel">
+  <a href="index.html" aria-current="page">Home</a>
+  <a href="index.html#treat">Tratamentos</a>
+  <a href="index.html#info">Preços &amp; Locais</a>
+  <a href="index.html#kintsugi">Filosofia</a>
+  <a href="bio.html">Biografia</a>
+  <a href="index.html#contacto">Contacto</a>
+</nav>
   </header>
 
   <main>
@@ -280,7 +414,10 @@
     <section class="stage" id="stage">
       <div class="sticky">
         <div class="split">
+          <!-- Icon -->
           <img class="icon-left" src="icon1.svg" alt="Símbolo" loading="eager" decoding="async">
+
+          <!-- Hero copy (rises from below on mobile) -->
           <div class="hero-copy">
             <h1>Toque que acalma.</h1>
             <p class="mute">Respiração. Meridianos. Presença.</p>
@@ -288,9 +425,10 @@
           </div>
         </div>
       </div>
+      <!-- (no ink-line under hero) -->
     </section>
 
-    <!-- CONTENT -->
+    <!-- CONTENT AFTER HERO -->
     <div class="content wrap">
       <div class="divider"><img src="icon2.svg" alt="" width="96" height="96" loading="lazy"></div>
 
@@ -344,6 +482,7 @@
           <p><strong>Manuel Pereira</strong> — Terapeuta de Zen Shiatsu</p>
         </div>
 
+        <!-- Socials -->
         <div class="socials" aria-label="Contactos e redes">
           <a class="icon-link" href="tel:+351919973618" aria-label="Ligar 919 973 618">
             <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -377,15 +516,19 @@
             <span>Anjos · Lisboa</span>
           </a>
         </div>
+
       </section>
     </div>
   </main>
 
+  <!-- Footer -->
   <footer>
     <div class="footer-inner">
-      <a href="index.html" aria-label="Ir para a página inicial">
+      <!-- Footer icon links to home and matches 96×96 -->
+      <a href="/" aria-label="Ir para a página inicial">
         <img class="footer-icon" src="icon.svg" alt="Ícone" width="96" height="96" loading="lazy">
       </a>
+      <!-- footer line removed -->
       <div class="footnote">© <span id="year"></span> Manuel Pereira Shiatsu</div>
       <div class="ink-line line-fade" aria-hidden="true"></div>
       <div class="footer-quote">
@@ -410,7 +553,7 @@ Vasco Gato “Imo”
   <script>
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Mobile menu
+    // ===== Mobile menu (with background scroll lock) =====
     const burger = document.getElementById('menu-toggle');
     const drawer = document.getElementById('mobile-nav');
     function setMenu(open){
@@ -427,7 +570,7 @@ Vasco Gato “Imo”
     });
     drawer?.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> setMenu(false)));
 
-    // Progress bar + hint + year
+    // ===== Progress bar + hint + year =====
     const bar   = document.getElementById('scrollbar');
     const hint  = document.getElementById('scrollhint');
     const year  = document.getElementById('year');
@@ -442,7 +585,7 @@ Vasco Gato “Imo”
       if (!hinted && h.scrollTop > 24 && hint){ hinted = true; hint.style.opacity = 0; setTimeout(()=>hint.remove(), 400); }
     }, {passive:true});
 
-    // Scroll timeline for hero
+    // ===== Scroll timeline for hero (works for desktop + mobile layout) =====
     const root = document.documentElement;
     const stage = document.getElementById('stage');
 
@@ -463,8 +606,8 @@ Vasco Gato “Imo”
       }
       if (stage){
         const p = clamp01(stageProgress(stage));
-        const heroAlpha = clamp01((p - 0.10) / 0.55);
-        const heroOut   = clamp01((p - 0.75) / 0.25);
+        const heroAlpha = clamp01((p - 0.10) / 0.55);  // 10–65%: fade/slide in
+        const heroOut   = clamp01((p - 0.75) / 0.25);  // 75–100%: fade out
         root.style.setProperty('--hero-alpha', heroAlpha.toFixed(3));
         root.style.setProperty('--hero-out',   heroOut.toFixed(3));
       }
@@ -480,7 +623,7 @@ Vasco Gato “Imo”
     window.addEventListener('resize', requestUpdate);
     document.addEventListener('DOMContentLoaded', requestUpdate);
 
-    // Quiet fades for dividers/footer
+    // ===== Quiet fades for dividers/footer =====
     const io = ('IntersectionObserver' in window) ? new IntersectionObserver((entries)=>{
       for(const e of entries){
         if (e.isIntersecting) e.target.classList.add('in');
@@ -494,7 +637,7 @@ Vasco Gato “Imo”
       document.querySelectorAll('.divider, footer').forEach(el=> el.classList.add('in'));
     }
 
-    // Back-to-top chevron
+    // ===== Back-to-top chevron (show after scroll) =====
     const toTop = document.getElementById('toTop');
     function getScrollTop(){
       return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
@@ -517,6 +660,22 @@ Vasco Gato “Imo”
       }
     }
     toTop?.addEventListener('click', (e)=>{ e.preventDefault(); scrollToTop(); });
+    // Touch/press feedback for icon links (so mobile gets the same delight)
+(function(){
+  const links = document.querySelectorAll('.icon-link');
+  if(!links.length) return;
+  links.forEach(el=>{
+    const on = ()=> el.classList.add('is-pressed');
+    const off = ()=> el.classList.remove('is-pressed');
+
+    el.addEventListener('touchstart', on, {passive:true});
+    el.addEventListener('mousedown', on);
+    ['touchend','touchcancel','mouseup','mouseleave','blur'].forEach(ev=>{
+      el.addEventListener(ev, off, {passive:true});
+    });
+  });
+})();
+
   </script>
 </body>
 </html>
