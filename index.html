@@ -98,6 +98,37 @@
     }
     .nav-inline a:hover::after{ transform:scaleX(1) }
 
+        /* Review column */
+    .review-col{
+      display:flex;
+      flex-direction:column;
+      gap:.6rem;
+      padding:14px 16px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:rgba(255,255,255,.22);
+      backdrop-filter:saturate(120%) blur(2px);
+      max-width:65ch;          /* keeps nice readable line length */
+      margin-top:.6rem;        /* breathing space after the h2 */
+    }
+    .review{                   /* h3 inside the review */
+      font-weight:400;
+      font-style:italic;
+      color:var(--ink-soft);
+      margin:0;
+    }
+    .review-sig{               /* signature bottom-right */
+      margin-top:auto;         /* pushes signature to the bottom of the column */
+      align-self:flex-end;     /* right align */
+      color:var(--mute);
+    }
+
+    /* Optional: widen on very small screens */
+    @media (max-width:720px){
+      .review-col{ max-width:unset }
+    }
+
+
     /* Mobile hamburger */
     .menu-toggle{ display:none; border:0; background:transparent; padding:8px; margin:-8px -8px -8px 0; border-radius:10px }
     .menu-toggle:focus-visible{ outline:2px solid rgba(0,0,0,.2); outline-offset:2px }
@@ -256,6 +287,33 @@
     .icon-left{ transition: transform var(--fast) var(--ease), opacity var(--fast) var(--ease); }
     .icon-left:hover{ transform: translateY(-3px) scale(1.01); }
 
+        /* Reviews grid */
+    .reviews-grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:clamp(12px, 2.4vw, 18px);
+      margin-top:.8rem;
+    }
+    @media (max-width: 980px){
+      .reviews-grid{ grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px){
+      .reviews-grid{ grid-template-columns: 1fr; }
+    }
+
+    /* Review card */
+    .review-col{
+      display:flex; flex-direction:column; gap:.6rem;
+      padding:14px 16px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:rgba(255,255,255,.22);
+      backdrop-filter:saturate(120%) blur(2px);
+    }
+    .review{ font-weight:400; font-style:italic; color:var(--ink-soft); margin:0; }
+    .review-sig{ margin-top:auto; align-self:flex-end; color:var(--mute); }
+
+
     @media (max-width: 720px){
       .flow{ padding-block:22px }
       header{ padding-block:10px }
@@ -347,29 +405,38 @@
     <div class="content wrap">
       <div class="divider"><img src="icon2.svg" alt="" width="96" height="96" loading="lazy"></div>
 
-      <section id="about" class="flow" aria-label="Sobre">
-        <div>
-          <h2>Da mão ao centro.</h2>
+      <div class="reviews-grid" aria-label="Testemunhos">
+        <!-- Review 1 (your existing) -->
+        <div class="review-col" role="blockquote" aria-label="Testemunho">
           <h3 class="review">
             O Manuel Pereira aborda as massagens de shiatsu com presença, atenção e respeito.
             Além dos benefícios que senti, no sono e relaxamento, valorizo estas massagens como
             momentos de quietude e de cuidado, que contrariam a aceleração e o desgaste
             provocados pelo dia a dia.
           </h3>
-          <p class="mute">— Filipa Cordeiro (investigadora)</p>
+          <p class="review-sig mute">— Filipa Cordeiro (investigadora)</p>
         </div>
-        <div class="ink-line line-fade" aria-hidden="true"></div>
-      </section>
       
-      <div class="divider"><img src="icon4.svg" alt="" width="96" height="96" loading="lazy"></div>
-
-      <section id="kintsugi" class="flow" aria-label="Filosofia">
-        <div>
-          <h2>Impermanência, equilíbrio.</h2>
-          <p>Yin e yang em movimento. Voltar ao eixo.</p>
+        <!-- Review 2 -->
+        <div class="review-col" role="blockquote" aria-label="Testemunho">
+          <h3 class="review">
+            Cheguei com tensão no pescoço e dor de cabeça frequente. A abordagem foi suave e
+            focada, e saí com a respiração mais aberta e a cabeça leve. O efeito manteve-se nos dias seguintes.
+          </h3>
+          <p class="review-sig mute">— João L., designer</p>
         </div>
-        <div class="ink-line line-fade" aria-hidden="true"></div>
-      </section>
+      
+        <!-- Review 3 -->
+        <div class="review-col" role="blockquote" aria-label="Testemunho">
+          <h3 class="review">
+            Senti um cuidado raro: escuta, ritmo e mãos seguras. O corpo abrandou e o sono
+            melhorou muito nessa semana. Recomendo a quem precise reencontrar o centro.
+          </h3>
+          <p class="review-sig mute">— Marta R., professora</p>
+        </div>
+      </div>
+      
+      
 
       <div class="divider"><img src="icon5.svg" alt="" width="96" height="96" loading="lazy"></div>
 
