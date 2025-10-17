@@ -53,7 +53,7 @@
       --fast: 200ms;
 
       /* Scroll-driven */
-      --hero-alpha: 0;  /* 0→1 fade in hero content (right) */
+      --hero-alpha: 0;  /* 0→1 fade in hero content (right / below on mobile) */
       --hero-out: 0;    /* 0→1 fade out at end of hero */
     }
 
@@ -151,7 +151,7 @@
       will-change:opacity, transform;
     }
 
-    /* Right: HERO COPY — fades in, then out */
+    /* Right (desktop) / Below (mobile): HERO COPY — fades in, then out */
     .hero-copy{
       opacity:calc(var(--hero-alpha) * (1 - var(--hero-out)));
       transform:
@@ -189,13 +189,14 @@
       display:block; margin:0 auto 10px auto;
       opacity:0; transform:translateY(8px);
       transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
+      width:96px; height:96px; /* match divider icon size */
     }
     footer.in .footer-icon{ opacity:1; transform:translateY(0) }
-    .footer-line{ width:100%; height:1px; background:linear-gradient(90deg, transparent, var(--line), transparent); margin:14px 0 18px 0 }
+    /* .footer-line removed per request */
     .footnote{ font-size:.95rem; color:var(--ink-soft) }
     .footer-quote{ margin:14px auto 0 auto; line-height:1.8; color:var(--ink-soft); max-width:50ch; white-space:pre-line }
 
-    /* Socials (pills removed) */
+    /* Socials (no pills) */
     .socials{
       display:flex; gap:12px; flex-wrap:wrap; align-items:center;
     }
@@ -232,7 +233,7 @@
     /* Content sections */
     .content .flow{ padding-block:clamp(28px, 7vw, 72px) }
 
-    /* Mobile tweaks */
+    /* Mobile tweaks — HERO surfaces from below icon */
     @media (max-width: 720px){
       .flow{ padding-block:22px }
       header{ padding-block:8px }
@@ -240,11 +241,41 @@
       .menu-toggle{ display:block }
 
       .stage{ height:240vh }
-      .split{ grid-template-columns:1fr 1fr; gap:18px; align-items:center; padding-inline:5vw }
-      .icon-left{ width:min(84vw,520px); max-height:65svh; justify-self:start }
+      .split{
+        grid-template-columns:1fr;
+        grid-auto-rows:auto;
+        gap:12px;
+        align-items:center;
+        justify-items:center;
+        padding-inline:5vw
+      }
+      .icon-left{
+        width:min(70vw, 420px);
+        max-height:52svh;
+        justify-self:center;
+      }
+      .hero-copy{
+        text-align:center;
+        /* stronger “rise from below” motion on mobile */
+        transform:
+          translateY(calc((1 - var(--hero-alpha)) * 28px))
+          scale(calc(0.985 + var(--hero-alpha) * 0.015))
+          translateY(calc(var(--hero-out) * -6px));
+      }
       .only-mobile{ display:block }
       .footer-inner{ padding:18px }
       .footer-quote{ max-width:68ch }
+
+      /* Stack socials/contacts one per line on mobile */
+      .socials{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+      }
+      .icon-link{
+        width:100%;
+        padding:6px 0;
+      }
     }
 
     /* Reduced motion */
@@ -296,10 +327,10 @@
     <section class="stage" id="stage">
       <div class="sticky">
         <div class="split">
-          <!-- Left: ICON (fades out with hero) -->
+          <!-- Icon -->
           <img class="icon-left" src="icon1.svg" alt="Símbolo" loading="eager" decoding="async">
 
-          <!-- Right: HERO copy -->
+          <!-- Hero copy (rises from below on mobile) -->
           <div class="hero-copy">
             <h1>Toque que acalma.</h1>
             <p class="mute">Respiração. Meridianos. Presença.</p>
@@ -364,7 +395,7 @@
           <p><strong>Manuel Pereira</strong> — Terapeuta de Zen Shiatsu</p>
         </div>
 
-        <!-- Socials (no pills) -->
+        <!-- Socials -->
         <div class="socials" aria-label="Contactos e redes">
           <a class="icon-link" href="tel:+351919973618" aria-label="Ligar 919 973 618">
             <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -406,13 +437,13 @@
   <!-- Footer -->
   <footer>
     <div class="footer-inner">
-      <!-- Footer icon now links to home -->
+      <!-- Footer icon links to home and matches 96×96 -->
       <a href="/" aria-label="Ir para a página inicial">
-        <img class="footer-icon" src="icon.svg" alt="Ícone" width="48" height="48" loading="lazy">
+        <img class="footer-icon" src="icon.svg" alt="Ícone" width="96" height="96" loading="lazy">
       </a>
-      <div class="footer-line" aria-hidden="true"></div>
+      <!-- footer line removed -->
       <div class="footnote">© <span id="year"></span> Manuel Pereira Shiatsu</div>
-
+      <div class="ink-line line-fade" aria-hidden="true"></div>
       <div class="footer-quote">
 Não há ponte entre duas margens,
 só quem habita a corrente
@@ -467,7 +498,7 @@ Vasco Gato “Imo”
       if (!hinted && h.scrollTop > 24 && hint){ hinted = true; hint.style.opacity = 0; setTimeout(()=>hint.remove(), 400); }
     }, {passive:true});
 
-    // ===== Scroll timeline for hero (right side) =====
+    // ===== Scroll timeline for hero (works for desktop + mobile layout) =====
     const root = document.documentElement;
     const stage = document.getElementById('stage');
 
@@ -488,7 +519,7 @@ Vasco Gato “Imo”
       }
       if (stage){
         const p = clamp01(stageProgress(stage));
-        const heroAlpha = clamp01((p - 0.10) / 0.55);  // 10–65%: fade in
+        const heroAlpha = clamp01((p - 0.10) / 0.55);  // 10–65%: fade/slide in
         const heroOut   = clamp01((p - 0.75) / 0.25);  // 75–100%: fade out
         root.style.setProperty('--hero-alpha', heroAlpha.toFixed(3));
         root.style.setProperty('--hero-out',   heroOut.toFixed(3));

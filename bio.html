@@ -115,6 +115,28 @@
     .page-hero h1{ margin-bottom:6px }
     .breadcrumbs{ font-size:.92rem; color:var(--mute) }
 
+      /* Back-to-top chevron */
+      #toTop{
+      position:fixed;
+      right:max(16px, env(safe-area-inset-right));
+      bottom:max(16px, env(safe-area-inset-bottom));
+      z-index:2000;
+      display:grid; place-items:center;
+      width:42px; height:42px; border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.6);
+      backdrop-filter:saturate(120%) blur(3px);
+      box-shadow:0 6px 20px rgba(0,0,0,.08);
+      color:var(--ink);
+      cursor:pointer;
+      opacity:0; pointer-events:none;
+      transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
+      -webkit-tap-highlight-color: transparent;
+    }
+    #toTop.show{ opacity:.95; pointer-events:auto }
+    #toTop:hover{ transform:translateY(-2px) }
+    #toTop svg{ width:18px; height:18px }
+
     .bio-grid{
       display:grid;
       grid-template-columns: auto 1fr;
@@ -306,8 +328,8 @@
     </div>
   </footer>
 
-  <!-- Back-to-top chevron -->
-  <button id="toTop" type="button" aria-label="Voltar ao topo" title="Topo">
+ <!-- Back-to-top chevron -->
+ <button id="toTop" type="button" aria-label="Voltar ao topo" title="Topo">
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M6 14l6-6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
@@ -336,74 +358,6 @@
     const year  = document.getElementById('year');
     if (year) year.textContent = new Date().getFullYear();
 
-    function getScrollTop(){
-      return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-    }
-    function getScrollableMax(){
-      const d = document.documentElement;
-      return Math.max(1, (d.scrollHeight || 0) - (d.clientHeight || 0));
-    }
-
-    // === Restore the original, simple scroll-based toggle that worked earlier ===
-    const toTop = document.getElementById('toTop');
-    function onScroll(){
-      // Progress bar
-      if (bar){
-        const s = getScrollTop()/getScrollableMax();
-        bar.style.width = (s*100).toFixed(2)+'%';
-      }
-      // Chevron visibility
-      if (toTop){
-        if (getScrollTop() > 80) toTop.classList.add('show');
-        else toTop.classList.remove('show');
-      }
-    }
-    // Run once and then on every scroll
-    window.addEventListener('load', onScroll, {once:true});
-    window.addEventListener('scroll', onScroll, {passive:true});
-    document.addEventListener('scroll', onScroll, {passive:true}); // extra safety
-
-    // === Robust scroll-to-top (works across engines) ===
-    function scrollToTop(){
-      if (drawer?.classList.contains('open')) setMenu(false); // close overlay if open
-
-      const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      // Native smooth (plus nudge both elements)
-      if (!prefersReduced && 'scrollBehavior' in document.documentElement.style && typeof window.scrollTo === 'function'){
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        // nudge stubborn engines too:
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-        return;
-      }
-
-      // rAF fallback
-      const start = getScrollTop();
-      const dur = prefersReduced ? 0 : 350;
-      if (dur === 0){
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
-        return;
-      }
-      const ease = t => t<.5 ? 2*t*t : -1+(4-2*t)*t;
-      let t0 = null;
-      function step(ts){
-        if (t0 === null) t0 = ts;
-        const p = Math.min(1, (ts - t0)/dur);
-        const y = Math.round(start * (1 - ease(p)));
-        document.documentElement.scrollTop = y;
-        document.body.scrollTop = y;
-        if (p < 1) requestAnimationFrame(step);
-      }
-      requestAnimationFrame(step);
-    }
-
-    toTop?.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      scrollToTop();
-    });
 
     // Tiny hero micro-parallax (unchanged)
     (function(){
@@ -420,6 +374,30 @@
       }
       requestAnimationFrame(tick);
     })();
+
+        // ===== Back-to-top chevron (show after scroll) =====
+        const toTop = document.getElementById('toTop');
+    function getScrollTop(){
+      return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    }
+    function toggleChevron(){
+      if (!toTop) return;
+      if (getScrollTop() > 120) toTop.classList.add('show');
+      else toTop.classList.remove('show');
+    }
+    window.addEventListener('scroll', toggleChevron, {passive:true});
+    window.addEventListener('load', toggleChevron, {once:true});
+
+    function scrollToTop(){
+      const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduced && 'scrollBehavior' in document.documentElement.style){
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }else{
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      }
+    }
+    toTop?.addEventListener('click', (e)=>{ e.preventDefault(); scrollToTop(); });
   </script>
 </body>
 </html>
