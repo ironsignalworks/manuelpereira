@@ -159,7 +159,7 @@
     }
     .footnote{ font-size:.95rem; color:var(--ink-soft) }
 
-    /* Back-to-top chevron (same as index + non-scrollable fallback) */
+    /* Back-to-top chevron */
     #toTop{
       position:fixed;
       right:max(16px, env(safe-area-inset-right));
@@ -391,41 +391,33 @@
       setTimeout(updateBar, 0);
     })();
     
-    /* =========================
-       Back-to-top chevron
-       - Shows only after threshold
-       - Smooth scroll to top on click
-    ========================= */
-    (function () {
+    // Back-to-top chevron (lower threshold + initial toggle)
+    (function(){
       const toTop = document.getElementById('toTop');
-      if (!toTop) return;
-    
-      const THRESHOLD = 12; // px scrolled before showing
-    
-      function getScrollTop() {
+      if(!toTop) return;
+      const THRESHOLD = 12; // show sooner
+      function getScrollTop(){
         const el = document.scrollingElement || document.documentElement;
         return el.scrollTop || window.pageYOffset || 0;
       }
-    
-      function toggleChevron() {
-        toTop.classList.toggle('show', getScrollTop() > THRESHOLD);
+      function toggleChevron(){
+        if (getScrollTop() > THRESHOLD) toTop.classList.add('show');
+        else toTop.classList.remove('show');
       }
-    
-      function scrollToTop() {
+      function scrollToTop(){
         const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (!reduced && 'scrollBehavior' in document.documentElement.style) {
+        if (!reduced && 'scrollBehavior' in document.documentElement.style){
           window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
           const el = document.scrollingElement || document.documentElement;
           el.scrollTop = 0; document.body.scrollTop = 0;
         }
       }
-    
-      toTop.addEventListener('click', (e) => { e.preventDefault(); scrollToTop(); });
-    
-      ['DOMContentLoaded','pageshow','load','scroll','resize','orientationchange']
-        .forEach(evt => window.addEventListener(evt, toggleChevron, { passive: true }));
-    
+      toTop.addEventListener('click', (e)=>{ e.preventDefault(); scrollToTop(); });
+      ['DOMContentLoaded','load','scroll','resize','orientationchange'].forEach(evt=>{
+        window.addEventListener(evt, toggleChevron, {passive:true});
+      });
+      // ensure correct state after initial paint
       setTimeout(toggleChevron, 0);
     })();
     
