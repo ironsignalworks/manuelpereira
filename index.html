@@ -31,8 +31,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+Antique:wght@400;500&display=swap" rel="stylesheet">
 
   <!-- Preload images -->
+  <link rel="preload" as="image" href="icon1.svg">
   <link rel="preload" as="image" href="logo.svg">
-  <link rel="preload" as="image" href="3.webp" type="image/webp" imagesrcset="3.webp 1x, 3.jpg 1x" imagesizes="100vw">
+  <link rel="preload" as="image" href="3.jpg">
 
   <style>
     :root{
@@ -52,11 +53,10 @@
       --fast: 200ms;
 
       /* Scroll-driven */
-      --logo-fade: 1;      /* 1→0 as scroll within hero */
-      --hero-in: 0;        /* 0→1 as scroll within hero */
+      --hero-alpha: 0;  /* 0→1 fade in hero content (right) */
+      --hero-out: 0;    /* 0→1 fade out at end of hero */
     }
 
-    /* Base */
     *,*::before,*::after{ box-sizing:border-box }
     html,body{ height:100% }
     html{ scroll-behavior:smooth }
@@ -66,7 +66,6 @@
       line-height:var(--lh); font-weight:400; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
     }
 
-    /* Type */
     h1,h2,h3{ font-weight:500; margin:0; line-height:1.18; letter-spacing:.01em }
     h1{ font-size:clamp(2.1rem, 5.2vw, 3.2rem) }
     h2{ font-size:clamp(1.5rem, 3vw, 2.05rem) }
@@ -83,10 +82,9 @@
     }
     a:hover{ background-size:100% 1px; color:var(--pine) }
 
-    /* Layout */
     .wrap{ width:var(--max); margin-inline:auto; position:relative }
     .flow{ padding-block:clamp(22px, 6vw, 68px) }
-    header{ padding-block:12px }
+    header{ padding-block:10px } /* tight header */
     section{ position:relative }
 
     .brand{ display:flex; justify-content:space-between; gap:18px; align-items:flex-end; flex-wrap:wrap }
@@ -114,7 +112,6 @@
     .nav-inline.mobile.open{ display:flex }
     .nav-inline.mobile a{ padding:8px 6px; font-size:1rem }
 
-    /* Divider lines (hairline) + animated fade/slide */
     .ink-line{
       height:1px; width:100%;
       background:linear-gradient(90deg, transparent, var(--line) 20%, rgba(23,22,20,.42) 50%, var(--line) 80%, transparent);
@@ -126,58 +123,61 @@
       will-change:opacity, transform;
     }
 
-    /* ===== Hero: sticky intro (lasts ~2 screens on mobile) ===== */
-    .hero{
-      padding:0; /* let sticky fill cleanly */
-      /* The section itself is tall; inner is sticky 100vh */
+    /* ===== STICKY INTRO→HERO REGION ===== */
+    .stage{
+      position:relative; height:210vh;
+      margin-top:0;
     }
-    .hero-stage{
-      position:relative;
-      height:140vh;          /* desktop: ~1.4 screens */
-    }
-    .hero-sticky{
+    .sticky{
       position:sticky; top:0; height:100vh;
-      display:grid; place-items:center;
-      overflow:hidden;
+      display:block; overflow:hidden;
     }
-    /* Layers */
-    .hero-logo{
-      position:absolute; inset:0;
-      margin:auto;
-      width:min(60vw, 560px);
-      max-height:80vh;
+    .split{
+      display:grid; grid-template-columns:minmax(220px, 0.9fr) 1.1fr; gap:clamp(16px, 5vw, 48px);
+      align-items:center; width:100%; height:100%;
+      padding-inline:6vw;
+      max-width:var(--max); margin-inline:auto;
+    }
+
+    /* Left: ICON — pinned, fades out with hero as we enter content */
+    .icon-left{
+      justify-self:start;
+      width:clamp(140px, 30vw, 380px);
+      max-height:calc(100vh - 80px);
       object-fit:contain;
-      opacity:var(--logo-fade);
-      transform:
-        translateY(calc((1 - var(--logo-fade)) * -10px))
-        scale(calc(0.98 + (1 - var(--logo-fade)) * 0.03));
-      transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
-      will-change:opacity, transform;
-    }
-    .hero-copy{
-      position:absolute; inset:0; display:grid; place-items:center; text-align:center; padding-inline:6vw;
-      opacity:var(--hero-in);
-      transform:
-        translateY(calc((1 - var(--hero-in)) * 12px))
-        scale(calc(0.98 + (var(--hero-in)) * 0.02));
+      opacity:calc(1 - var(--hero-out)); /* fade with hero-out */
+      transform:translateY(calc(var(--hero-out) * -8px));
       transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
       will-change:opacity, transform;
     }
 
-    /* Dividers (img, fade on scroll) */
+    /* Right: HERO COPY — fades in, then out */
+    .hero-copy{
+      opacity:calc(var(--hero-alpha) * (1 - var(--hero-out)));
+      transform:
+        translateY(calc((1 - var(--hero-alpha)) * 16px))
+        scale(calc(0.98 + var(--hero-alpha) * 0.02))
+        translateY(calc(var(--hero-out) * -8px));
+      transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
+      will-change:opacity, transform;
+      text-align:left;
+    }
+
+    /* Quiet dividers */
     .divider{ display:grid; place-items:center; padding-block:22px }
     .divider img{
-      width:96px; height:96px; display:block; opacity:var(--icon-alpha,1);
+      width:96px; height:96px; display:block;
+      opacity:0; transform:translateY(8px);
       transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
-      transform:translateY(calc((1 - var(--icon-alpha,1)) * 8px));
-      will-change:opacity, transform;
     }
+    .divider.in img{ opacity:1; transform:translateY(0) }
 
-    /* Footer (photo bg + icon + quote + year) */
+    /* Footer */
     footer{
       position:relative; min-height:min(56vh, 520px);
       display:grid; place-items:center; text-align:center; color:var(--ink);
-      background: image-set(url('3.webp') type('image/webp'), url('3.jpg') type('image/jpeg')) center 100% / cover no-repeat;
+      background: url('3.jpg') center 100% / cover no-repeat;
+      background-image: image-set(url('3.webp') type('image/webp'), url('3.jpg') type('image/jpeg'));
     }
     footer::before{
       content:""; position:absolute; inset:0;
@@ -186,29 +186,28 @@
     }
     .footer-inner{ position:relative; z-index:1; padding:24px; max-width:var(--max) }
     .footer-icon{
-      display:block; margin:0 auto 10px auto; opacity:var(--icon-alpha,1);
+      display:block; margin:0 auto 10px auto;
+      opacity:0; transform:translateY(8px);
       transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
-      transform:translateY(calc((1 - var(--icon-alpha,1)) * 8px)); width:48px; height:48px;
     }
+    footer.in .footer-icon{ opacity:1; transform:translateY(0) }
     .footer-line{ width:100%; height:1px; background:linear-gradient(90deg, transparent, var(--line), transparent); margin:14px 0 18px 0 }
     .footnote{ font-size:.95rem; color:var(--ink-soft) }
-    .footer-quote{
-      margin:14px auto 0 auto; line-height:1.8; color:var(--ink-soft); max-width:50ch; white-space:pre-line;
-    }
+    .footer-quote{ margin:14px auto 0 auto; line-height:1.8; color:var(--ink-soft); max-width:50ch; white-space:pre-line }
 
-    /* ===== Mobile: full-screen SVG & a longer intro (2+ screens) ===== */
+    /* Content sections */
+    .content .flow{ padding-block:clamp(28px, 7vw, 72px) }
+
+    /* Mobile tweaks */
     @media (max-width: 720px){
       .flow{ padding-block:22px }
-      header{ padding-block:10px }
+      header{ padding-block:8px }
       .nav-inline.desktop{ display:none }
       .menu-toggle{ display:block }
 
-      .hero-stage{ height:200vh }         /* hero lasts ~2 full scrolls */
-      .hero-sticky{ height:100vh }        /* sticky viewport */
-      .hero-logo{
-        width:min(92vw, 720px);           /* fill screen width */
-        max-height:92vh;                  /* fill screen height comfortably */
-      }
+      .stage{ height:240vh }
+      .split{ grid-template-columns:1fr 1fr; gap:18px; align-items:center; padding-inline:5vw }
+      .icon-left{ width:min(84vw,520px); max-height:65svh; justify-self:start }
       .only-mobile{ display:block }
       .footer-inner{ padding:18px }
       .footer-quote{ max-width:68ch }
@@ -217,43 +216,23 @@
     /* Reduced motion */
     @media (prefers-reduced-motion: reduce){
       html{ scroll-behavior:auto }
-      .hero-logo, .hero-copy, .divider img, .footer-icon, .line-fade{ transition:none }
+      .hero-copy, .icon-left, .divider img, .footer-icon, .line-fade{ transition:none }
     }
   </style>
 </head>
 <body>
   <div id="scrollbar" aria-hidden="true" style="position:fixed;top:0;left:0;height:2px;width:0;z-index:999;background:linear-gradient(90deg, rgba(23,22,20,.75), rgba(23,22,20,.35));box-shadow:0 0 8px rgba(23,22,20,.18)"></div>
 
-  <main class="wrap">
-    <header class="flow" style="position:relative">
-      <div class="brand" style="width:100%; align-items:center">
-        <div class="name">
-          <h3>Manuel Pereira Shiatsu</h3>
+  <!-- HEADER -->
+  <header class="wrap" style="position:relative">
+    <div class="brand" style="width:100%; align-items:center">
+      <div class="name">
+        <h3>Manuel Pereira Shiatsu</h3>
         <small>Zen Shiatsu · TCM</small>
-        </div>
-
-        <!-- Desktop nav -->
-        <nav class="nav-inline desktop" aria-label="Navegação principal">
-          <a href="/">Home</a>
-          <a href="/#treat">Tratamentos</a>
-          <a href="/#kintsugi">Filosofia</a>
-          <a href="/#space">Espaço</a>
-          <a href="/#info">Info</a>
-          <a href="/bio.html">Biografia</a>
-          <a href="/#contacto">Contacto</a>
-        </nav>
-
-        <!-- Mobile hamburger -->
-        <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu" aria-controls="mobile-nav" aria-expanded="false">
-          <svg class="menu-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-          </svg>
-        </button>
       </div>
 
-      <!-- Mobile drawer -->
-      <nav class="nav-inline mobile" id="mobile-nav" aria-label="Navegação principal móvel">
-        <a href="/">Home</a>
+      <nav class="nav-inline desktop" aria-label="Navegação principal">
+        <a href="/" aria-current="page">Home</a>
         <a href="/#treat">Tratamentos</a>
         <a href="/#kintsugi">Filosofia</a>
         <a href="/#space">Espaço</a>
@@ -261,122 +240,120 @@
         <a href="/bio.html">Biografia</a>
         <a href="/#contacto">Contacto</a>
       </nav>
-    </header>
 
-    <!-- 00 Home / Hero -->
-    <section id="home" class="hero" aria-label="Home">
-      <div class="hero-stage" id="hero-stage">
-        <div class="hero-sticky">
-          <!-- Logo layer (intro) -->
-          <img class="hero-logo" src="logo.svg" alt="" aria-hidden="true">
-          <!-- Copy layer (fades in over the logo) -->
+      <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu" aria-controls="mobile-nav" aria-expanded="false">
+        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="nav-inline mobile" id="mobile-nav" aria-label="Navegação principal móvel">
+      <a href="/" aria-current="page">Home</a>
+      <a href="/#treat">Tratamentos</a>
+      <a href="/#kintsugi">Filosofia</a>
+      <a href="/#space">Espaço</a>
+      <a href="/#info">Info</a>
+      <a href="/bio.html">Biografia</a>
+      <a href="/#contacto">Contacto</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- STICKY INTRO→HERO REGION -->
+    <section class="stage" id="stage">
+      <div class="sticky">
+        <div class="split">
+          <!-- Left: ICON (now fades out with hero) -->
+          <img class="icon-left" src="icon1.svg" alt="Símbolo" loading="eager" decoding="async">
+
+          <!-- Right: HERO copy -->
           <div class="hero-copy">
-            <div>
-              <h1>Toque que acalma.</h1>
-              <p class="mute">Respiração. Meridianos. Presença.</p>
-              <p class="mute only-mobile">Corpo inteiro, ritmo natural, atenção gentil — um convite a regressar ao eixo.</p>
-            </div>
+            <h1>Toque que acalma.</h1>
+            <p class="mute">Respiração. Meridianos. Presença.</p>
+            <p class="mute only-mobile">Corpo inteiro, ritmo natural, atenção gentil — um convite a regressar ao eixo.</p>
           </div>
         </div>
       </div>
-      <div class="ink-line line-fade" aria-hidden="true"></div>
+      <!-- removed the ink-line below hero per request -->
     </section>
 
-    <!-- Divider 2 -->
-    <div class="divider icon-fade"><img src="icon2.svg" alt="" width="96" height="96" loading="lazy"></div>
+    <!-- CONTENT AFTER HERO -->
+    <div class="content wrap">
+      <div class="divider"><img src="icon2.svg" alt="" width="96" height="96" loading="lazy"></div>
 
-    <!-- 01 About -->
-    <section id="about" class="flow" aria-label="Sobre">
-      <div>
-        <h2>Da mão ao centro.</h2>
-        <p>Escuta. Pressão suave. Ritmo natural.</p>
-      </div>
-      <div class="ink-line line-fade" aria-hidden="true"></div>
-    </section>
+      <section id="about" class="flow" aria-label="Sobre">
+        <div>
+          <h2>Da mão ao centro.</h2>
+          <p>Escuta. Pressão suave. Ritmo natural.</p>
+        </div>
+        <div class="ink-line line-fade" aria-hidden="true"></div>
+      </section>
 
-    <!-- Divider 3 -->
-    <div class="divider icon-fade"><img src="icon3.svg" alt="" width="96" height="96" loading="lazy"></div>
+      <div class="divider"><img src="icon3.svg" alt="" width="96" height="96" loading="lazy"></div>
 
-    <!-- 02 Treatments -->
-    <section id="treat" class="flow" aria-label="Tratamentos">
-      <div>
-        <h2>Shiatsu · Acupressão · Cupping · Gua Sha</h2>
-        <p>Sessões de 60′. Corpo inteiro. Respiração guiada.</p>
-      </div>
-      <div class="ink-line line-fade" aria-hidden="true"></div>
-    </section>
+      <section id="treat" class="flow" aria-label="Tratamentos">
+        <div>
+          <h2>Shiatsu · Acupressão · Cupping · Gua Sha</h2>
+          <p>Sessões de 60′. Corpo inteiro. Respiração guiada.</p>
+        </div>
+        <div class="ink-line line-fade" aria-hidden="true"></div>
+      </section>
 
-    <!-- Divider 4 -->
-    <div class="divider icon-fade"><img src="icon4.svg" alt="" width="96" height="96" loading="lazy"></div>
+      <div class="divider"><img src="icon4.svg" alt="" width="96" height="96" loading="lazy"></div>
 
-    <!-- 03 Philosophy -->
-    <section id="kintsugi" class="flow" aria-label="Filosofia">
-      <div>
-        <h2>Impermanência, equilíbrio.</h2>
-        <p>Yin e yang em movimento. Voltar ao eixo.</p>
-      </div>
-      <div class="ink-line line-fade" aria-hidden="true"></div>
-    </section>
+      <section id="kintsugi" class="flow" aria-label="Filosofia">
+        <div>
+          <h2>Impermanência, equilíbrio.</h2>
+          <p>Yin e yang em movimento. Voltar ao eixo.</p>
+        </div>
+        <div class="ink-line line-fade" aria-hidden="true"></div>
+      </section>
 
-    <!-- Divider 5 -->
-    <div class="divider icon-fade"><img src="icon5.svg" alt="" width="96" height="96" loading="lazy"></div>
+      <div class="divider"><img src="icon5.svg" alt="" width="96" height="96" loading="lazy"></div>
 
-    <!-- 04 Space -->
-    <section id="space" class="flow" aria-label="Espaço">
-      <div>
-        <h2>Luz. Madeira. Silêncio.</h2>
-        <p class="mute">Um lugar para abrandar.</p>
-      </div>
-      <div class="ink-line line-fade" aria-hidden="true"></div>
-    </section>
+      <section id="space" class="flow" aria-label="Espaço">
+        <div>
+          <h2>Luz. Madeira. Silêncio.</h2>
+          <p class="mute">Um lugar para abrandar.</p>
+        </div>
+        <div class="ink-line line-fade" aria-hidden="true"></div>
+      </section>
 
-    <!-- 05 Information -->
-    <section id="info" class="flow" aria-label="Informação">
-      <div>
-        <h2>Locais</h2>
-        <ul>
-          <li>Anjos · Lisboa</li>
-          <li>Almoçageme · Colares</li>
-          <li>Domicílio (Lisboa)</li>
-          <li>4 Elementos · El Corte Inglés</li>
-        </ul>
-        <p class="mute">Sessão média: 60 minutos (entrevista + diagnóstico + tratamento).</p>
-      </div>
-      <div class="ink-line line-fade" aria-hidden="true"></div>
-    </section>
+      <section id="info" class="flow" aria-label="Informação">
+        <div>
+          <h2>Locais</h2>
+          <ul>
+            <li>Anjos · Lisboa</li>
+            <li>Almoçageme · Colares</li>
+            <li>Domicílio (Lisboa)</li>
+            <li>4 Elementos · El Corte Inglés</li>
+          </ul>
+          <p class="mute">Sessão média: 60 minutos (entrevista + diagnóstico + tratamento).</p>
+        </div>
+        <div class="ink-line line-fade" aria-hidden="true"></div>
+      </section>
 
-    <!-- 06 Contact -->
-    <section id="contacto" class="flow" aria-label="Contacto & Marcação">
-      <div>
-        <h2>Contacto &amp; Marcação</h2>
-        <p><strong>Manuel Pereira</strong> — Terapeuta de Zen Shiatsu</p>
-      </div>
+      <section id="contacto" class="flow" aria-label="Contacto & Marcação">
+        <div>
+          <h2>Contacto &amp; Marcação</h2>
+          <p><strong>Manuel Pereira</strong> — Terapeuta de Zen Shiatsu</p>
+        </div>
 
-      <div class="socials" aria-label="Contactos e redes" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-        <a class="icon-link" href="tel:+351919973618" aria-label="Ligar 919 973 618" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><path d="M3 5c0-1.1.9-2 2-2h2a2 2 0 0 1 2 1.7l.3 1.7a2 2 0 0 1-.6 1.8L8 10a14 14 0 0 0 6 6l1.8-.7a2 2 0 0 1 1.8.2l1.6 1a2 2 0 0 1 .8 2l-.4 2a2 2 0 0 1-2 1.6C8.5 22.7 1.3 15.5 1 6a2 2 0 0 1 2-1Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>919&nbsp;973&nbsp;618</span>
-        </a>
-        <a class="icon-link" href="mailto:manuelpereira.shiatsu@gmail.com" aria-label="Enviar email" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.5"/><path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Email</span>
-        </a>
-        <a class="icon-link" href="https://instagram.com/manuelpereira.shiatsu" target="_blank" rel="noopener" aria-label="Instagram" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
-          <span>@manuelpereira.shiatsu</span>
-        </a>
-        <a class="icon-link" href="https://maps.google.com/?q=Anjos+Lisboa" target="_blank" rel="noopener" aria-label="Ver no mapa" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg>
-          <span>Anjos · Lisboa</span>
-        </a>
-      </div>
+        <div class="socials" aria-label="Contactos e redes" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+          <a class="icon-link" href="tel:+351919973618" aria-label="Ligar 919 973 618" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)"><svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><path d="M3 5c0-1.1.9-2 2-2h2a2 2 0 0 1 2 1.7l.3 1.7a2 2 0 0 1-.6 1.8L8 10a14 14 0 0 0 6 6l1.8-.7a2 2 0 0 1 1.8.2l1.6 1a2 2 0 0 1 .8 2l-.4 2a2 2 0 0 1-2 1.6C8.5 22.7 1.3 15.5 1 6a2 2 0 0 1 2-1Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>919&nbsp;973&nbsp;618</span></a>
+          <a class="icon-link" href="mailto:manuelpereira.shiatsu@gmail.com" aria-label="Enviar email" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)"><svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.5"/><path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Email</span></a>
+          <a class="icon-link" href="https://instagram.com/manuelpereira.shiatsu" target="_blank" rel="noopener" aria-label="Instagram" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)"><svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg><span>@manuelpereira.shiatsu</span></a>
+          <a class="icon-link" href="https://maps.google.com/?q=Anjos+Lisboa" target="_blank" rel="noopener" aria-label="Ver no mapa" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)"><svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg><span>Anjos · Lisboa</span></a>
+        </div>
 
-      <div class="ink-line line-fade" aria-hidden="true"></div>
-    </section>
+        <div class="ink-line line-fade" aria-hidden="true"></div>
+      </section>
+    </div>
   </main>
 
-  <!-- Footer with background image + real icon.svg + year + quote -->
-  <footer class="icon-fade">
+  <!-- Footer -->
+  <footer>
     <div class="footer-inner">
       <img class="footer-icon" src="icon.svg" alt="Ícone" width="48" height="48" loading="lazy">
       <div class="footer-line" aria-hidden="true"></div>
@@ -394,7 +371,9 @@ Vasco Gato “Imo”
   <div id="scrollhint" class="mute" style="position:fixed; right:16px; bottom:16px; font-size:.85rem; opacity:.7; backdrop-filter:blur(2px); background:rgba(255,255,255,.35); padding:6px 10px; border-radius:999px">Scroll</div>
 
   <script>
-    // Mobile hamburger toggle + ESC close + outside click
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ===== Mobile menu (with background scroll lock) =====
     const burger = document.getElementById('menu-toggle');
     const drawer = document.getElementById('mobile-nav');
     function setMenu(open){
@@ -411,15 +390,14 @@ Vasco Gato “Imo”
     });
     drawer?.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> setMenu(false)));
 
-    // Scroll progress bar + hint dismiss
+    // ===== Progress bar + hint + year =====
     const bar   = document.getElementById('scrollbar');
     const hint  = document.getElementById('scrollhint');
-    const root  = document.documentElement;
     const year  = document.getElementById('year');
     if (year) year.textContent = new Date().getFullYear();
 
     let hinted = false;
-    document.addEventListener('scroll', () => {
+    window.addEventListener('scroll', () => {
       const h = document.documentElement;
       const max = Math.max(1, h.scrollHeight - h.clientHeight);
       const s = (h.scrollTop)/max;
@@ -427,49 +405,57 @@ Vasco Gato “Imo”
       if (!hinted && h.scrollTop > 24){ hinted = true; hint.style.opacity = 0; setTimeout(()=>hint.remove(), 400); }
     }, {passive:true});
 
-    // ===== Hero progress (sticky): logo → copy =====
-    const heroStage  = document.getElementById('hero-stage');
-    function heroTick(){
-      if(!heroStage) return;
-      const wh = window.innerHeight;
-      const r  = heroStage.getBoundingClientRect(); // hero section (tall: 140–200vh)
-      const start = wh;                              // top reaches one viewport above stick start
-      const end   = r.height - wh;                   // when sticky ends
-      const traveled = Math.min(Math.max((start - r.top), 0), end); // clamp
-      const progress = end > 0 ? (traveled / end) : 1; // 0→1 over hero duration
+    // ===== Scroll timeline for hero (right side) =====
+    const root = document.documentElement;
+    const stage = document.getElementById('stage');
 
-      // map to nicer beats: logo fades out over first 40%, copy fades in from 25% to 80%
-      const logoFade = Math.max(0, 1 - (progress / 0.40));
-      const heroIn   = Math.min(1, Math.max(0, (progress - 0.25) / 0.55));
-
-      root.style.setProperty('--logo-fade', logoFade.toFixed(3));
-      root.style.setProperty('--hero-in', heroIn.toFixed(3));
-
-      requestAnimationFrame(heroTick);
+    function clamp01(v){ return Math.max(0, Math.min(1, v)); }
+    function stageProgress(el){
+      const r = el.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      const total = r.height - vh;
+      const seen = -r.top;
+      return total <= 0 ? 1 : seen / total;
     }
-    requestAnimationFrame(heroTick);
 
-    // Fade icons + lines based on distance to viewport center
-    (function(){
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      const wrappers = Array.from(document.querySelectorAll('.icon-fade, .divider, .line-fade'));
-      function tick(){
-        const wh = window.innerHeight;
-        for(const el of wrappers){
-          const r = el.getBoundingClientRect();
-          const center = r.top + r.height/2;
-          const dist = Math.abs(center - wh/2);
-          const norm = Math.min(1, dist / (wh * 0.9));      // 0 near center → 1 far
-          const alpha = 1 - Math.max(0, norm - 0.2) / 0.8;  // hold brighter near center
-
-          el.style.setProperty('--icon-alpha', alpha.toFixed(3));
-          el.style.setProperty('--line-alpha', alpha.toFixed(3));
-          el.style.opacity = alpha.toFixed(3);
-        }
-        requestAnimationFrame(tick);
+    function applyTimeline(){
+      if (prefersReduced){
+        root.style.setProperty('--hero-alpha', '1');
+        root.style.setProperty('--hero-out','0');
+        return;
       }
-      requestAnimationFrame(tick);
-    })();
+      if (stage){
+        const p = clamp01(stageProgress(stage));
+        const heroAlpha = clamp01((p - 0.10) / 0.55);  // 10–65%: fade in
+        const heroOut   = clamp01((p - 0.75) / 0.25);  // 75–100%: fade out
+        root.style.setProperty('--hero-alpha', heroAlpha.toFixed(3));
+        root.style.setProperty('--hero-out',   heroOut.toFixed(3));
+      }
+    }
+
+    let ticking = false;
+    function requestUpdate(){
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { ticking = false; applyTimeline(); });
+    }
+    window.addEventListener('scroll', requestUpdate, {passive:true});
+    window.addEventListener('resize', requestUpdate);
+    document.addEventListener('DOMContentLoaded', requestUpdate);
+
+    // ===== Quiet fades for dividers/footer =====
+    const io = ('IntersectionObserver' in window) ? new IntersectionObserver((entries)=>{
+      for(const e of entries){
+        if (e.isIntersecting) e.target.classList.add('in');
+        else e.target.classList.remove('in');
+      }
+    }, {root:null, rootMargin:'0px 0px -10% 0px', threshold:0.2}) : null;
+
+    if (io){
+      document.querySelectorAll('.divider, footer').forEach(el=> io.observe(el));
+    }else{
+      document.querySelectorAll('.divider, footer').forEach(el=> el.classList.add('in'));
+    }
   </script>
 </body>
 </html>

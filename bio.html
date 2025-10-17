@@ -124,15 +124,6 @@
       font-size:.92rem; color:var(--mute)
     }
 
-    /* Divider icon style (for mid-page separators) */
-    .divider{ display:grid; place-items:center; padding-block:22px }
-    .divider img{
-      width:96px; height:96px; display:block; opacity:var(--icon-alpha,1);
-      transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
-      transform:translateY(calc((1 - var(--icon-alpha,1)) * 8px));
-      will-change:opacity, transform;
-    }
-
     /* Contact form (same style as index) */
     .form{ display:grid; gap:12px; margin-top:14px; max-width:680px }
     .row{ display:grid; gap:12px; grid-template-columns:1fr 1fr }
@@ -149,6 +140,13 @@
     .help{ font-size:.86rem; color:var(--mute) }
     .success{ display:none; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:#fff }
     .success.show{ display:block }
+
+    .bio-image{
+     width:200%;
+     height:auto;
+     object-fit:contain;
+     border-radius:12px;
+    }
 
     /* Footer (photo bg + icon + year) */
     footer{
@@ -250,21 +248,13 @@
     <section id="bio" class="flow" aria-label="Biografia">
       <div>
         <h2>Manuel Pereira</h2>
+        <p class="bio-image"><img src="bio.webp" alt="bio" /></p>
         <p>Nascido em Coimbra em 1984, com formação em Estudos Artísticos e Estudos Editoriais, tem procurado aprofundar, desde o relativamente tardio mas intenso encontro com o Shiatsu, um estudo pessoal em torno do vasto potencial que a Presença pelo Toque encerra.</p>
         <p>Dedicou-se neste último ano à formação em Massagem Desportiva e de Reabilitação, tendo como propósito a aproximação entre duas perspectivas e trajectos que considera complementares, como parte de um esforço continuado de busca de uma totalidade subtil.</p>
       </div>
       <div class="ink-line line-fade" aria-hidden="true"></div>
     </section>
-
-        <!-- 04 Space -->
-        <section id="space" class="flow" aria-label="Espaço">
-            <div>
-              <h2>Luz. Madeira. Silêncio.</h2>
-              <p class="mute">Um lugar para abrandar.</p>
-            </div>
-            <div class="ink-line line-fade" aria-hidden="true"></div>
-          </section>
-      
+     
           <!-- 05 Information -->
           <section id="info" class="flow" aria-label="Informação">
             <div>
