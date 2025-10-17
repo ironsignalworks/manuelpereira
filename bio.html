@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manuel Pereira - Terapeuta de Zen Shiatsu</title>
-</head>
-<style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Biografia — Manuel Pereira · Zen Shiatsu</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+Antique:wght@400;500&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+Antique:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Preload key images -->
+  <link rel="preload" as="image" href="icon1.svg">
+  <link rel="preload" as="image" href="logo.svg">
+  <link rel="preload" as="image" href="3.webp" type="image/webp" imagesrcset="3.webp 1x, 3.jpg 1x" imagesizes="100vw">
+
+  <style>
     :root{
       --paper:#c8c88f;
       --ink:#171614;
@@ -22,9 +33,9 @@
       --dur: 700ms;
       --fast: 200ms;
 
-      /* Scroll-driven */
-      --logo-fade: 1;   /* 1→0 as scroll */
-      --hero-in: 0;     /* 0→1 as scroll */
+      /* page-hero micro motion */
+      --hero-alpha: 1;
+      --hero-shift: 0px;
     }
 
     /* Base */
@@ -45,8 +56,6 @@
     p{ margin:.35rem 0; color:var(--ink-soft) }
     .mute{ color:var(--mute) }
     small{ color:var(--mute) }
-    .only-mobile{ display:none }
-
     a{
       color:var(--jade); text-decoration:none;
       background:linear-gradient(currentColor,currentColor) left 100%/0 1px no-repeat;
@@ -85,7 +94,7 @@
     .nav-inline.mobile.open{ display:flex }
     .nav-inline.mobile a{ padding:8px 6px; font-size:1rem }
 
-    /* Divider lines (hairline) + animated fade/slide */
+    /* Hairline + subtle fades */
     .ink-line{
       height:1px; width:100%;
       background:linear-gradient(90deg, transparent, var(--line) 20%, rgba(23,22,20,.42) 50%, var(--line) 80%, transparent);
@@ -97,25 +106,25 @@
       will-change:opacity, transform;
     }
 
-    /* Hero (logo near nav; copy crossfades over it) */
-    .hero{ padding-top:6px; padding-bottom:clamp(28px, 8vw, 68px) }
-    .hero-stage{ position:relative; min-height:clamp(170px, 28vw, 320px) }
-    .hero-logo{
-      position:relative; display:block; width:clamp(140px, 26vw, 320px); max-width:85%; margin:0;
-      opacity:var(--logo-fade);
-      transform:translateY(calc((1 - var(--logo-fade)) * -8px));
-      transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
-      will-change:opacity, transform;
+    /* ===== PAGE HERO (compact, not the index intro) ===== */
+    .page-hero{
+      padding-block: clamp(28px, 10vw, 80px);
     }
-    .hero-copy{
-      pointer-events:none; position:absolute; inset:0; display:grid; place-items:center;
-      opacity:var(--hero-in);
-      transform:translateY(calc((1 - var(--hero-in)) * 8px));
-      transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
-      will-change:opacity, transform; text-align:center; padding-inline:6vw;
+    .page-hero .inner{
+      display:grid; grid-template-columns:auto 1fr; gap:18px; align-items:center;
+    }
+    .hero-icon{
+      width:72px; height:72px; flex:0 0 auto; display:block;
+      opacity:var(--hero-alpha);
+      transform: translateY(var(--hero-shift)) scale(calc(0.98 + (1 - var(--hero-alpha)) * 0.04));
+      transition: opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
+    }
+    .page-hero h1{ margin-bottom:6px }
+    .breadcrumbs{
+      font-size:.92rem; color:var(--mute)
     }
 
-    /* Dividers (img, fade on scroll) */
+    /* Divider icon style (for mid-page separators) */
     .divider{ display:grid; place-items:center; padding-block:22px }
     .divider img{
       width:96px; height:96px; display:block; opacity:var(--icon-alpha,1);
@@ -124,11 +133,28 @@
       will-change:opacity, transform;
     }
 
-    /* Footer (photo bg + icon + quote + year) */
+    /* Contact form (same style as index) */
+    .form{ display:grid; gap:12px; margin-top:14px; max-width:680px }
+    .row{ display:grid; gap:12px; grid-template-columns:1fr 1fr }
+    .form label{ font-size:.92rem; color:var(--ink) }
+    .input, .textarea, .button{
+      font:inherit; color:var(--ink); background:#fff; border:1px solid var(--line);
+      border-radius:12px; padding:12px 14px;
+      transition:border-color var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
+    }
+    .input:focus, .textarea:focus{ outline:none; border-color:var(--pine); box-shadow:0 0 0 3px rgba(15,43,32,.12) }
+    .textarea{ min-height:140px; resize:vertical }
+    .button{ background:var(--mint); cursor:pointer; font-weight:500 }
+    .button:hover{ filter:contrast(1.04) }
+    .help{ font-size:.86rem; color:var(--mute) }
+    .success{ display:none; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:#fff }
+    .success.show{ display:block }
+
+    /* Footer (photo bg + icon + year) */
     footer{
-      position:relative; min-height:min(56vh, 520px);
+      position:relative; min-height:min(40vh, 420px);
       display:grid; place-items:center; text-align:center; color:var(--ink);
-      background: image-set(url('3.webp') type('image/webp'), url('3.jpg') type('image/jpeg')) center 100% / cover no-repeat;
+      background: image-set(url('4.webp') type('image/webp'), url('4.jpg') type('image/jpeg')) center 100% / cover no-repeat;
     }
     footer::before{
       content:""; position:absolute; inset:0;
@@ -143,9 +169,6 @@
     }
     .footer-line{ width:100%; height:1px; background:linear-gradient(90deg, transparent, var(--line), transparent); margin:14px 0 18px 0 }
     .footnote{ font-size:.95rem; color:var(--ink-soft) }
-    .footer-quote{
-      margin:14px auto 0 auto; line-height:1.8; color:var(--ink-soft); max-width:50ch; white-space:pre-line;
-    }
 
     /* Responsive */
     @media (max-width: 720px){
@@ -153,73 +176,217 @@
       header{ padding-block:10px }
       .nav-inline.desktop{ display:none }
       .menu-toggle{ display:block }
-      .hero-stage{ min-height:380px }
-      .only-mobile{ display:block }
+      .page-hero .inner{ grid-template-columns:1fr; text-align:center }
+      .hero-icon{ margin:0 auto }
+      .row{ grid-template-columns:1fr }
       .footer-inner{ padding:18px }
-      .footer-quote{ max-width:68ch }
     }
 
     /* Reduced motion */
     @media (prefers-reduced-motion: reduce){
       html{ scroll-behavior:auto }
-      .hero-logo, .hero-copy, .divider img, .footer-icon, .line-fade{ transition:none }
+      .hero-icon, .divider img, .footer-icon, .line-fade{ transition:none }
     }
-    </style>
+  </style>
+</head>
 <body>
-    <div class="divider icon-fade"><img src="icon1.svg" alt="" width="96" height="96" loading="lazy"></div>
+  <!-- slim top progress (optional) -->
+  <div id="scrollbar" aria-hidden="true" style="position:fixed;top:0;left:0;height:2px;width:0;z-index:999;background:linear-gradient(90deg, rgba(23,22,20,.75), rgba(23,22,20,.35));box-shadow:0 0 8px rgba(23,22,20,.18)"></div>
 
-    <h1>Manuel Pereira</h1>
-     <p>Nascido em Coimbra em 1984, com formação em Estudos Artísticos e Estudos Editoriais, tem procurado aprofundar, desde o relativamente tardio mas intenso encontro com o Shiatsu, um estudo pessoal em torno do vasto potencial que a Presença pelo Toque encerra.</p> <br>    
+  <main class="wrap">
+    <!-- Header / Brand / Nav -->
+    <header class="flow" style="position:relative">
+      <div class="brand" style="width:100%; align-items:center">
+        <div class="name">
+          <h3>Manuel Pereira Shiatsu</h3>
+          <small>Zen Shiatsu · TCM</small>
+        </div>
 
-     <p>Dedicou-se neste último ano à formação em Massagem Desportiva e de Reabilitação,</p> <br>                            
-<p>tendo como propósito a aproximação entre duas perspectivas e trajectos que considera complementares, como parte de um esforço continuado de busca de uma totalidade subtil.</p>
+        <!-- Desktop nav (link 'Home' points to index) -->
+        <nav class="nav-inline desktop" aria-label="Navegação principal">
+            <a href="/">Home</a>
+            <a href="/#treat">Tratamentos</a>
+            <a href="/#kintsugi">Filosofia</a>
+            <a href="/#space">Espaço</a>
+            <a href="/#info">Info</a>
+            <a href="/bio.html">Biografia</a>
+            <a href="/#contacto">Contacto</a>
+        </nav>
 
-<section id="info" class="flow" aria-label="Informação">
-    <div>
-      <h2>Locais</h2>
-      <ul>
-        <li>Anjos · Lisboa</li>
-        <li>Almoçageme · Colares</li>
-        <li>Domicílio (Lisboa)</li>
-        <li>4 Elementos · El Corte Inglés</li>
-      </ul>
-      <p class="mute">Sessão média: 60 minutos (entrevista + diagnóstico + tratamento).</p>
-    </div>
-    <div class="ink-line line-fade" aria-hidden="true"></div>
-  </section>
+        <!-- Mobile hamburger -->
+        <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu" aria-controls="mobile-nav" aria-expanded="false">
+          <svg class="menu-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
 
-  <!-- 06 Contact -->
-  <section id="contacto" class="flow" aria-label="Contacto & Marcação">
-    <div>
-      <h2>Contacto &amp; Marcação</h2>
-      <p><strong>Manuel Pereira</strong> — Terapeuta de Zen Shiatsu</p>
-    </div>
+      <!-- Mobile drawer -->
+      <nav class="nav-inline mobile" id="mobile-nav" aria-label="Navegação principal móvel">
+        <a href="/">Home</a>
+        <a href="/#treat">Tratamentos</a>
+        <a href="/#kintsugi">Filosofia</a>
+        <a href="/#space">Espaço</a>
+        <a href="/#info">Info</a>
+        <a href="/bio.html">Biografia</a>
+        <a href="/#contacto">Contacto</a>
+      </nav>
+    </header>
 
-    <div class="socials" aria-label="Contactos e redes" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-      <a class="icon-link" href="tel:+351919973618" aria-label="Ligar 919 973 618" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><path d="M3 5c0-1.1.9-2 2-2h2a2 2 0 0 1 2 1.7l.3 1.7a2 2 0 0 1-.6 1.8L8 10a14 14 0 0 0 6 6l1.8-.7a2 2 0 0 1 1.8.2l1.6 1a2 2 0 0 1 .8 2l-.4 2a2 2 0 0 1-2 1.6C8.5 22.7 1.3 15.5 1 6a2 2 0 0 1 2-1Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>919&nbsp;973&nbsp;618</span>
-      </a>
-      <a class="icon-link" href="mailto:manuelpereira.shiatsu@gmail.com" aria-label="Enviar email" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.5"/><path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>Email</span>
-      </a>
-      <a class="icon-link" href="https://instagram.com/manuelpereira.shiatsu" target="_blank" rel="noopener" aria-label="Instagram" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
-        <span>@manuelpereira.shiatsu</span>
-      </a>
-      <a class="icon-link" href="https://maps.google.com/?q=Anjos+Lisboa" target="_blank" rel="noopener" aria-label="Ver no mapa" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg>
-        <span>Anjos · Lisboa</span>
-      </a>
-    </div>
+    <!-- PAGE HERO (compact) -->
+    <section class="page-hero flow" aria-label="Topo da página Biografia">
+      <div class="inner">
+        <img class="hero-icon" src="icon1.svg" alt="" aria-hidden="true">
+        <div>
+          <div class="breadcrumbs">Home / <span class="mute">Biografia</span></div>
+          <h1>Biografia</h1>
+          <p class="mute">Percurso, prática e presença pelo toque.</p>
+        </div>
+      </div>
+      <div class="ink-line line-fade" aria-hidden="true"></div>
+    </section>
+
+    <!-- BIO CONTENT -->
+    <section id="bio" class="flow" aria-label="Biografia">
+      <div>
+        <h2>Manuel Pereira</h2>
+        <p>Nascido em Coimbra em 1984, com formação em Estudos Artísticos e Estudos Editoriais, tem procurado aprofundar, desde o relativamente tardio mas intenso encontro com o Shiatsu, um estudo pessoal em torno do vasto potencial que a Presença pelo Toque encerra.</p>
+        <p>Dedicou-se neste último ano à formação em Massagem Desportiva e de Reabilitação, tendo como propósito a aproximação entre duas perspectivas e trajectos que considera complementares, como parte de um esforço continuado de busca de uma totalidade subtil.</p>
+      </div>
+      <div class="ink-line line-fade" aria-hidden="true"></div>
+    </section>
+
+        <!-- 04 Space -->
+        <section id="space" class="flow" aria-label="Espaço">
+            <div>
+              <h2>Luz. Madeira. Silêncio.</h2>
+              <p class="mute">Um lugar para abrandar.</p>
+            </div>
+            <div class="ink-line line-fade" aria-hidden="true"></div>
+          </section>
+      
+          <!-- 05 Information -->
+          <section id="info" class="flow" aria-label="Informação">
+            <div>
+              <h2>Locais</h2>
+              <ul>
+                <li>Anjos · Lisboa</li>
+                <li>Almoçageme · Colares</li>
+                <li>Domicílio (Lisboa)</li>
+                <li>4 Elementos · El Corte Inglés</li>
+              </ul>
+              <p class="mute">Sessão média: 60 minutos (entrevista + diagnóstico + tratamento).</p>
+            </div>
+            <div class="ink-line line-fade" aria-hidden="true"></div>
+          </section>
+      
+          <!-- 06 Contact -->
+          <section id="contacto" class="flow" aria-label="Contacto & Marcação">
+            <div>
+              <h2>Contacto &amp; Marcação</h2>
+              <p><strong>Manuel Pereira</strong> — Terapeuta de Zen Shiatsu</p>
+            </div>
+      
+            <div class="socials" aria-label="Contactos e redes" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+              <a class="icon-link" href="tel:+351919973618" aria-label="Ligar 919 973 618" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><path d="M3 5c0-1.1.9-2 2-2h2a2 2 0 0 1 2 1.7l.3 1.7a2 2 0 0 1-.6 1.8L8 10a14 14 0 0 0 6 6l1.8-.7a2 2 0 0 1 1.8.2l1.6 1a2 2 0 0 1 .8 2l-.4 2a2 2 0 0 1-2 1.6C8.5 22.7 1.3 15.5 1 6a2 2 0 0 1 2-1Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>919&nbsp;973&nbsp;618</span>
+              </a>
+              <a class="icon-link" href="mailto:manuelpereira.shiatsu@gmail.com" aria-label="Enviar email" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.5"/><path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Email</span>
+              </a>
+              <a class="icon-link" href="https://instagram.com/manuelpereira.shiatsu" target="_blank" rel="noopener" aria-label="Instagram" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+                <span>@manuelpereira.shiatsu</span>
+              </a>
+              <a class="icon-link" href="https://maps.google.com/?q=Anjos+Lisboa" target="_blank" rel="noopener" aria-label="Ver no mapa" style="display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px; background:var(--mint); color:var(--ink); border:1px solid var(--line)">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width:18px; height:18px"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg>
+                <span>Anjos · Lisboa</span>
+              </a>
+            </div>
+      
+            <div class="ink-line line-fade" aria-hidden="true"></div>
+          </section>
+        </main>
+
   <!-- Footer with background image + real icon.svg + year + quote -->
   <footer class="icon-fade">
     <div class="footer-inner">
       <img class="footer-icon" src="icon.svg" alt="Ícone" width="48" height="48" loading="lazy">
-      <div class="footer-line" aria-hidden="true"></div>
       <div class="footnote">© <span id="year"></span> Manuel Pereira Shiatsu</div>
+
     </div>
   </footer>
+
+  <div id="scrollhint" class="mute" style="position:fixed; right:16px; bottom:16px; font-size:.85rem; opacity:.7; backdrop-filter:blur(2px); background:rgba(255,255,255,.35); padding:6px 10px; border-radius:999px">Scroll</div>
+
+  <script>
+    // Mobile hamburger toggle + ESC close + outside click
+    const burger = document.getElementById('menu-toggle');
+    const drawer = document.getElementById('mobile-nav');
+    function setMenu(open){
+      drawer.classList.toggle('open', open);
+      burger?.setAttribute('aria-expanded', open ? 'true' : 'false');
+      document.body.classList.toggle('nav-open', open);
+    }
+    burger?.addEventListener('click', ()=> setMenu(!drawer.classList.contains('open')));
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape') setMenu(false); });
+    document.addEventListener('click', e=>{
+      if(!drawer?.classList.contains('open')) return;
+      const within = drawer.contains(e.target) || burger.contains(e.target);
+      if(!within) setMenu(false);
+    });
+    drawer?.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> setMenu(false)));
+
+    // Year + scroll progress
+    const bar   = document.getElementById('scrollbar');
+    const year  = document.getElementById('year');
+    if (year) year.textContent = new Date().getFullYear();
+    document.addEventListener('scroll', () => {
+      const h = document.documentElement;
+      const max = Math.max(1, h.scrollHeight - h.clientHeight);
+      const s = (h.scrollTop)/max;
+      if (bar) bar.style.width = (s*100).toFixed(2)+'%';
+    }, {passive:true});
+
+    // Subtle page-hero micro parallax on icon
+    (function(){
+      const icon = document.querySelector('.hero-icon');
+      if(!icon) return;
+      function tick(){
+        const r = icon.getBoundingClientRect();
+        const wh = innerHeight || document.documentElement.clientHeight;
+        const centerDist = (r.top + r.height/2) - (wh/2); // px from center
+        const norm = Math.max(-1, Math.min(1, centerDist / (wh/2)));
+        // map to small motion
+        document.documentElement.style.setProperty('--hero-shift', (norm * -6).toFixed(1) + 'px');
+        document.documentElement.style.setProperty('--hero-alpha', (1 - Math.abs(norm)*0.2).toFixed(3));
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    })();
+
+    // Netlify inline success (keep SPA behavior everywhere)
+    const form = document.querySelector('form[name="contacto"]');
+    const success = document.getElementById('form-success');
+    if (form && success) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = new FormData(form);
+        try{
+          await fetch("/", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams(data).toString()
+          });
+          success.classList.add('show');
+          form.reset();
+        } catch(err){
+          window.location.href = "mailto:manuelpereira.shiatsu@gmail.com?subject=Contacto%20via%20site";
+        }
+      });
+    }
+  </script>
 </body>
 </html>
