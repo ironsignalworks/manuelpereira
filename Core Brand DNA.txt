@@ -1,0 +1,103 @@
+🌿 Core Brand DNA (Creative Direction Summary)
+Element	Expression	Notes
+Essence	Ancient touch, modern calm.	Grounded in Traditional Chinese Medicine and jungle atmosphere — never “new age fluff.”
+Mood	Rooted · Ethereal · Slow · Intelligent · Humble	Calm confidence rather than luxury spa gloss.
+Voice	Softly instructive, poetic yet clear	A teacher and healer, not a marketer. Words flow like breath — short lines, natural rhythm.
+Texture	Botanical · Mineral · Breath · Mist	Layers of natural imagery and subtle animation evoke a living environment.
+Tempo	Measured · Breathing · Flowing	Visual rhythm should match meditative breathing — slow fade-ins, deliberate pacing.
+🪷 Extended Visual Language
+1. Color Field
+
+Use color as emotion, not decoration.
+
+Layer	Color	Function
+Base	Warm ivory, pale sand	Calm and grounding background
+Organic Tones	Driftwood, taupe, muted ochre	Support body text and dividers
+Life / Vitality	Sage, olive, moss, jade	Accent and buttons — symbolizes energy flow
+Mystical Depth	Deep forest green, mossy teal	Shadows, overlays, footer gradient
+Highlight / Energy	Muted gold or soft amber	For hover states or fine detailing (qi shimmer)
+
+Optional: use subtle radial gradients to simulate morning light filtering through leaves.
+
+2. Typography System
+Type	Example	Use
+Headings (Serif)	Cormorant Garamond, Playfair Display, or Noto Serif SC	Traditional wisdom; elegance
+Body (Sans)	Inter, Work Sans, Noto Sans JP	Modern readability
+Accents / Symbolic Glyphs	Subtle Hanzi (氣, 靜, 風) or line seals in SVG	Use sparingly to create moments of reverence
+
+Typography hierarchy should breathe — generous line height, no crowding, lots of white/negative space.
+
+3. Imagery System
+
+Hero layer:
+→ Lush, immersive, moving forest light. A brief video loop or cinemagraph of leaves + water movement.
+→ Subtle overlay mist gradient from bottom → top.
+
+Detail imagery:
+→ Hands in treatment, bamboo, ceramic bowls, soft fabric, dew drops.
+→ All natural light. Avoid anything glossy or “stock spa.”
+
+Texture overlays:
+→ Paper grain, stone texture, or leaf shadow (opacity 3–8%).
+→ Optional animated mist particles using CSS or Lottie.
+
+🧭 Interaction & Motion Guidelines
+Motion	Description
+Scroll behavior	Parallax reveals — content emerges as if mist clears.
+Hover states	Slight light bloom or gold shimmer — qi activation.
+Transitions	400–800ms fades, ease-in-out; never jarring or fast.
+Microinteractions	Floating leaves or water ripples reacting subtly to cursor.
+Loading state	Animated seal or rotating meridian circle (SVG outline).
+🌸 Content & Messaging Tone
+Brand Voice Keywords:
+
+Calm · Grounded · Wise · Sensory · Compassionate · Reflective
+
+Writing Style:
+
+Use short, rhythmic sentences.
+
+Avoid marketing hype — instead, invite.
+
+Blend sensory and philosophical language.
+
+Reference balance, flow, and connection frequently.
+
+Examples:
+
+“Each touch is a reminder: your body remembers balance.”
+
+“Listen. The forest is speaking through your breath.”
+
+“Between tension and release lies renewal.”
+
+🪴 Site Architecture & Copy Mood
+Section	Role	Emotional Feel
+Home	Gateway to calm	“Arrival in the forest.” Minimal text, ambient motion.
+Philosophy	Anchor	Classical references, diagrams, poetic body text.
+Treatments	Utility	Still imagery, clear durations & benefits, flowing layout.
+Practitioner	Human warmth	Storytelling tone — “how I came to this path.”
+Space / Location	Visual proof	Warm photography, bamboo, water reflections.
+Booking / Contact	Clarity	Minimal fields, white background, floating CTA.
+Blog / Insights	Depth	Longform wisdom; use botanical header motifs.
+✨ Optional Brand Elements
+
+Logo direction ideas:
+
+Stylized circular seal (印章 style) with meridian lines or water ripple.
+
+Wordmark in serif or brush calligraphy hybrid, paired with modern sans tagline.
+
+Icon set ideas:
+
+Leaf (Growth)
+
+Ripple (Flow)
+
+Mountain (Stability)
+
+Circle line (Balance)
+
+Sound / ambient layer (optional):
+
+Subtle forest ambience or water tone loop on hero section, fading out automatically.
