@@ -294,6 +294,61 @@
       gap:clamp(12px, 2.4vw, 18px);
       margin-top:.8rem;
     }
+    /* Subtle CTA / form box */
+    .cta-box{
+      margin-top:1.2rem;
+      padding:16px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:rgba(255,255,255,.22);
+      backdrop-filter:saturate(120%) blur(2px);
+    }
+    .cta-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:.4rem }
+    .cta-head h2{ margin:0 }
+    .cta-head small{ color:var(--mute) }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:.6rem;
+    }
+    .form-grid .full{ grid-column:1 / -1 }
+    .form-grid label{ display:block; font-size:.92rem; color:var(--mute); margin-bottom:6px }
+    .input, .textarea, .select{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:rgba(255,255,255,.55);
+      padding:10px 12px;
+      font:inherit; color:var(--ink);
+      transition:border-color var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
+    }
+    .input:focus, .textarea:focus{
+      outline:none;
+      border-color: color-mix(in srgb, var(--jade) 40%, transparent);
+      box-shadow:0 0 0 3px rgba(44,93,74,.12);
+    }
+    .textarea{ min-height:120px; resize:vertical }
+
+    .form-row-inline{ display:flex; align-items:center; gap:8px; font-size:.92rem; color:var(--mute) }
+
+    .btn{
+      appearance:none; border:1px solid var(--line);
+      background:rgba(255,255,255,.6);
+      border-radius:999px; padding:10px 14px;
+      font-weight:500; cursor:pointer;
+      transition:transform var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
+    }
+    .btn:hover{ transform:translateY(-1px) }
+    .btn:active{ transform:translateY(0) scale(.98) }
+    .btn[disabled]{ opacity:.6; cursor:not-allowed }
+
+    .form-note{ font-size:.85rem; color:var(--mute) }
+    .status{ font-size:.95rem; margin-top:.4rem }
+    .status.ok{ color:var(--jade) }
+    .status.err{ color: #8a2a2a }
+
     @media (max-width: 980px){
       .reviews-grid{ grid-template-columns: repeat(2, 1fr); }
     }
@@ -364,7 +419,6 @@
       <nav class="nav-inline desktop" aria-label="Navegação principal">
         <a href="index.html#treat">Tratamentos</a>
         <a href="index.html#info">Preços &amp; Locais</a>
-        <a href="index.html#kintsugi">Filosofia</a>
         <a href="bio.html">Biografia</a>
         <a href="index.html#contacto">Contacto</a>
       </nav>
@@ -380,7 +434,6 @@
     <nav class="nav-inline mobile" id="mobile-nav" aria-label="Navegação principal móvel">
       <a href="index.html#treat">Tratamentos</a>
       <a href="index.html#info">Preços &amp; Locais</a>
-      <a href="index.html#kintsugi">Filosofia</a>
       <a href="bio.html">Biografia</a>
       <a href="index.html#contacto">Contacto</a>
     </nav>
@@ -434,12 +487,9 @@
           </h3>
           <p class="review-sig mute">— Marta R., professora</p>
         </div>
-      </div>
-      
-      
+      </div>   
 
-      <div class="divider"><img src="icon5.svg" alt="" width="96" height="96" loading="lazy"></div>
-
+      <div class="divider"><img src="icon3.svg" alt="" width="96" height="96" loading="lazy"></div>
       <section id="info" class="flow" aria-label="Informação">
         <div>
           <h2>Locais</h2>
@@ -453,6 +503,8 @@
         </div>
         <div class="ink-line line-fade" aria-hidden="true"></div>
       </section>
+
+      <div class="divider"><img src="icon4.svg" alt="" width="96" height="96" loading="lazy"></div>
 
       <section id="contacto" class="flow" aria-label="Contacto & Marcação">
         <div>
@@ -494,6 +546,67 @@
           </a>
         </div>
 
+        <div class="divider"><img src="icon5.svg" alt="" width="96" height="96" loading="lazy"></div>
+
+        <section id="cta" class="flow" aria-label="Marcação rápida">
+          <div class="wrap">
+            <div class="cta-box">
+              <div class="cta-head">
+                <h2>Envie uma mensagem</h2>
+                <small>(respondo normalmente no próprio dia)</small>
+              </div>
+        
+              <!-- Netlify Forms ready -->
+              <form
+                name="contacto-site"
+                method="POST"
+                data-netlify="true"
+                netlify-honeypot="bot-field"
+                accept-charset="utf-8"
+                id="contactoForm"
+              >
+                <!-- Netlify needs this hidden input -->
+                <input type="hidden" name="form-name" value="contacto-site" />
+                <!-- Honeypot -->
+                <div style="display:none">
+                  <label>Não preencha: <input name="bot-field" /></label>
+                </div>
+        
+                <div class="form-grid">
+                  <div>
+                    <label for="nome">Nome</label>
+                    <input class="input" type="text" id="nome" name="nome" autocomplete="name" required />
+                  </div>
+        
+                  <div>
+                    <label for="email">Email</label>
+                    <input class="input" type="email" id="email" name="email" autocomplete="email" required />
+                  </div>
+        
+                  <div class="full">
+                    <label for="mensagem">Mensagem</label>
+                    <textarea class="textarea" id="mensagem" name="mensagem" required></textarea>
+                  </div>
+        
+                  <div class="full form-row-inline">
+                    <input type="checkbox" id="consent" name="consent" required />
+                    <label for="consent">Autorizo ser contactado para resposta à minha mensagem.</label>
+                  </div>
+        
+                  <div class="full" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
+                    <button type="submit" class="btn" id="sendBtn">Enviar</button>
+                    <span class="form-note">ou envie diretamente para <a href="mailto:manuelpereira.shiatsu@gmail.com">manuelpereira.shiatsu@gmail.com</a></span>
+                  </div>
+        
+                  <div class="full">
+                    <div id="formStatus" class="status" aria-live="polite"></div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+  
       </section>
     </div>
   </main>
