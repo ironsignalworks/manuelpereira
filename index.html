@@ -161,6 +161,11 @@
     }
     .divider.in img{ opacity:1; transform:translateY(0) }
 
+    .review{ font-weight:400; font-style:italic; color:var(--ink-soft) }
+      h2 + .review{ margin-top:.6rem }
+    .review + .mute{ margin-top:.25rem }
+
+
     /* Footer — super-subtle hover */
     footer{
       position:relative; min-height:min(56vh, 520px);
@@ -345,21 +350,17 @@
       <section id="about" class="flow" aria-label="Sobre">
         <div>
           <h2>Da mão ao centro.</h2>
-          <p>Escuta. Pressão suave. Ritmo natural.</p>
+          <h3 class="review">
+            O Manuel Pereira aborda as massagens de shiatsu com presença, atenção e respeito.
+            Além dos benefícios que senti, no sono e relaxamento, valorizo estas massagens como
+            momentos de quietude e de cuidado, que contrariam a aceleração e o desgaste
+            provocados pelo dia a dia.
+          </h3>
+          <p class="mute">— Filipa Cordeiro (investigadora)</p>
         </div>
         <div class="ink-line line-fade" aria-hidden="true"></div>
       </section>
-
-      <div class="divider"><img src="icon3.svg" alt="" width="96" height="96" loading="lazy"></div>
-
-      <section id="treat" class="flow" aria-label="Tratamentos">
-        <div>
-          <h2>Shiatsu · Acupressão · Cupping · Gua Sha</h2>
-          <p>Sessões de 60′. Corpo inteiro. Respiração guiada.</p>
-        </div>
-        <div class="ink-line line-fade" aria-hidden="true"></div>
-      </section>
-
+      
       <div class="divider"><img src="icon4.svg" alt="" width="96" height="96" loading="lazy"></div>
 
       <section id="kintsugi" class="flow" aria-label="Filosofia">
