@@ -52,8 +52,8 @@
       --fast: 200ms;
 
       /* Scroll-driven */
-      --logo-fade: 1;   /* 1→0 as scroll */
-      --hero-in: 0;     /* 0→1 as scroll */
+      --logo-fade: 1;      /* 1→0 as scroll within hero */
+      --hero-in: 0;        /* 0→1 as scroll within hero */
     }
 
     /* Base */
@@ -126,22 +126,42 @@
       will-change:opacity, transform;
     }
 
-    /* Hero (logo near nav; copy crossfades over it) */
-    .hero{ padding-top:6px; padding-bottom:clamp(28px, 8vw, 68px) }
-    .hero-stage{ position:relative; min-height:clamp(170px, 28vw, 320px) }
+    /* ===== Hero: sticky intro (lasts ~2 screens on mobile) ===== */
+    .hero{
+      padding:0; /* let sticky fill cleanly */
+      /* The section itself is tall; inner is sticky 100vh */
+    }
+    .hero-stage{
+      position:relative;
+      height:140vh;          /* desktop: ~1.4 screens */
+    }
+    .hero-sticky{
+      position:sticky; top:0; height:100vh;
+      display:grid; place-items:center;
+      overflow:hidden;
+    }
+    /* Layers */
     .hero-logo{
-      position:relative; display:block; width:clamp(140px, 26vw, 320px); max-width:85%; margin:0;
+      position:absolute; inset:0;
+      margin:auto;
+      width:min(60vw, 560px);
+      max-height:80vh;
+      object-fit:contain;
       opacity:var(--logo-fade);
-      transform:translateY(calc((1 - var(--logo-fade)) * -8px));
+      transform:
+        translateY(calc((1 - var(--logo-fade)) * -10px))
+        scale(calc(0.98 + (1 - var(--logo-fade)) * 0.03));
       transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
       will-change:opacity, transform;
     }
     .hero-copy{
-      pointer-events:none; position:absolute; inset:0; display:grid; place-items:center;
+      position:absolute; inset:0; display:grid; place-items:center; text-align:center; padding-inline:6vw;
       opacity:var(--hero-in);
-      transform:translateY(calc((1 - var(--hero-in)) * 8px));
+      transform:
+        translateY(calc((1 - var(--hero-in)) * 12px))
+        scale(calc(0.98 + (var(--hero-in)) * 0.02));
       transition:opacity var(--fast) var(--ease), transform var(--fast) var(--ease);
-      will-change:opacity, transform; text-align:center; padding-inline:6vw;
+      will-change:opacity, transform;
     }
 
     /* Dividers (img, fade on scroll) */
@@ -176,13 +196,19 @@
       margin:14px auto 0 auto; line-height:1.8; color:var(--ink-soft); max-width:50ch; white-space:pre-line;
     }
 
-    /* Responsive */
+    /* ===== Mobile: full-screen SVG & a longer intro (2+ screens) ===== */
     @media (max-width: 720px){
       .flow{ padding-block:22px }
       header{ padding-block:10px }
       .nav-inline.desktop{ display:none }
       .menu-toggle{ display:block }
-      .hero-stage{ min-height:380px }
+
+      .hero-stage{ height:200vh }         /* hero lasts ~2 full scrolls */
+      .hero-sticky{ height:100vh }        /* sticky viewport */
+      .hero-logo{
+        width:min(92vw, 720px);           /* fill screen width */
+        max-height:92vh;                  /* fill screen height comfortably */
+      }
       .only-mobile{ display:block }
       .footer-inner{ padding:18px }
       .footer-quote{ max-width:68ch }
@@ -203,7 +229,7 @@
       <div class="brand" style="width:100%; align-items:center">
         <div class="name">
           <h3>Manuel Pereira Shiatsu</h3>
-          <small>Zen Shiatsu · TCM</small>
+        <small>Zen Shiatsu · TCM</small>
         </div>
 
         <!-- Desktop nav -->
@@ -237,15 +263,19 @@
       </nav>
     </header>
 
-    <!-- 00 Home -->
-    <section id="home" class="flow hero" aria-label="Home">
-      <div class="hero-stage">
-        <img class="hero-logo" src="logo.svg" alt="" aria-hidden="true">
-        <div class="hero-copy">
-          <div>
-            <h1>Toque que acalma.</h1>
-            <p class="mute">Respiração. Meridianos. Presença.</p>
-            <p class="mute only-mobile">Corpo inteiro, ritmo natural, atenção gentil — um convite a regressar ao eixo.</p>
+    <!-- 00 Home / Hero -->
+    <section id="home" class="hero" aria-label="Home">
+      <div class="hero-stage" id="hero-stage">
+        <div class="hero-sticky">
+          <!-- Logo layer (intro) -->
+          <img class="hero-logo" src="logo.svg" alt="" aria-hidden="true">
+          <!-- Copy layer (fades in over the logo) -->
+          <div class="hero-copy">
+            <div>
+              <h1>Toque que acalma.</h1>
+              <p class="mute">Respiração. Meridianos. Presença.</p>
+              <p class="mute only-mobile">Corpo inteiro, ritmo natural, atenção gentil — um convite a regressar ao eixo.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -381,7 +411,7 @@ Vasco Gato “Imo”
     });
     drawer?.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> setMenu(false)));
 
-    // Scroll progress + hint + hero crossfade (logo → copy)
+    // Scroll progress bar + hint dismiss
     const bar   = document.getElementById('scrollbar');
     const hint  = document.getElementById('scrollhint');
     const root  = document.documentElement;
@@ -389,24 +419,35 @@ Vasco Gato “Imo”
     if (year) year.textContent = new Date().getFullYear();
 
     let hinted = false;
-    const LOGO_FADE_DIST = 260; // px: logo 1→0
-    const COPY_FADE_DIST = 220; // px: copy 0→1
-
-    const onScroll = () => {
+    document.addEventListener('scroll', () => {
       const h = document.documentElement;
       const max = Math.max(1, h.scrollHeight - h.clientHeight);
       const s = (h.scrollTop)/max;
       if (bar) bar.style.width = (s*100).toFixed(2)+'%';
       if (!hinted && h.scrollTop > 24){ hinted = true; hint.style.opacity = 0; setTimeout(()=>hint.remove(), 400); }
+    }, {passive:true});
 
-      // Crossfade variables
-      const logoFade = Math.max(0, 1 - (h.scrollTop / LOGO_FADE_DIST));
-      const heroIn   = Math.min(1, (h.scrollTop / COPY_FADE_DIST));
+    // ===== Hero progress (sticky): logo → copy =====
+    const heroStage  = document.getElementById('hero-stage');
+    function heroTick(){
+      if(!heroStage) return;
+      const wh = window.innerHeight;
+      const r  = heroStage.getBoundingClientRect(); // hero section (tall: 140–200vh)
+      const start = wh;                              // top reaches one viewport above stick start
+      const end   = r.height - wh;                   // when sticky ends
+      const traveled = Math.min(Math.max((start - r.top), 0), end); // clamp
+      const progress = end > 0 ? (traveled / end) : 1; // 0→1 over hero duration
+
+      // map to nicer beats: logo fades out over first 40%, copy fades in from 25% to 80%
+      const logoFade = Math.max(0, 1 - (progress / 0.40));
+      const heroIn   = Math.min(1, Math.max(0, (progress - 0.25) / 0.55));
+
       root.style.setProperty('--logo-fade', logoFade.toFixed(3));
       root.style.setProperty('--hero-in', heroIn.toFixed(3));
-    };
-    document.addEventListener('scroll', onScroll, {passive:true});
-    onScroll(); // init
+
+      requestAnimationFrame(heroTick);
+    }
+    requestAnimationFrame(heroTick);
 
     // Fade icons + lines based on distance to viewport center
     (function(){
@@ -421,10 +462,8 @@ Vasco Gato “Imo”
           const norm = Math.min(1, dist / (wh * 0.9));      // 0 near center → 1 far
           const alpha = 1 - Math.max(0, norm - 0.2) / 0.8;  // hold brighter near center
 
-          // Set for icons AND lines (both read the CSS var they need)
           el.style.setProperty('--icon-alpha', alpha.toFixed(3));
           el.style.setProperty('--line-alpha', alpha.toFixed(3));
-          // Also set element opacity to ensure wrappers fade too
           el.style.opacity = alpha.toFixed(3);
         }
         requestAnimationFrame(tick);
