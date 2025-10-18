@@ -349,6 +349,10 @@
     .status.ok{ color:var(--jade) }
     .status.err{ color: #8a2a2a }
 
+    #shiatsu h2 { margin-bottom: .5rem; }
+    #shiatsu p + p { margin-top: .75rem; }
+
+
     @media (max-width: 980px){
       .reviews-grid{ grid-template-columns: repeat(2, 1fr); }
     }
@@ -415,74 +419,86 @@
         <h3>Manuel Pereira Shiatsu</h3>
         <small>Zen Shiatsu · TCM</small>
       </div>
-
+  
+      <!-- Desktop nav -->
       <nav class="nav-inline desktop" aria-label="Navegação principal">
         <a href="index.html#treat">Tratamentos</a>
+        <a href="index.html#shiatsu">O que é o Shiatsu?</a>
         <a href="index.html#info">Preços &amp; Locais</a>
         <a href="bio.html">Biografia</a>
         <a href="index.html#contacto">Contacto</a>
       </nav>
-
+  
+      <!-- One single toggle button -->
       <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu" aria-controls="mobile-nav" aria-expanded="false">
         <svg class="menu-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
         </svg>
       </button>
     </div>
-
-    <!-- Mobile nav -->
+  
+    <!-- Single mobile nav -->
     <nav class="nav-inline mobile" id="mobile-nav" aria-label="Navegação principal móvel">
       <a href="index.html#treat">Tratamentos</a>
+      <a href="index.html#shiatsu">O que é o Shiatsu?</a>
       <a href="index.html#info">Preços &amp; Locais</a>
       <a href="bio.html">Biografia</a>
       <a href="index.html#contacto">Contacto</a>
     </nav>
   </header>
-
+  
   <main>
-    <!-- STICKY INTRO→HERO REGION -->
-    <section class="stage" id="stage">
+    <!-- STICKY INTRO → HERO REGION -->
+    <section id="stage" class="stage" aria-label="Introdução">
       <div class="sticky">
         <div class="split">
-          <img class="icon-left" src="icon1.svg" alt="Símbolo" loading="eager" decoding="async">
+          <img
+            class="icon-left"
+            src="icon1.svg"
+            alt=""
+            aria-hidden="true"
+            loading="eager"
+            decoding="async"
+          />
           <div class="hero-copy">
-            <h1>Toque que acalma.</h1>
-            <p class="mute">Respiração. Meridianos. Presença.</p>
-            <p class="mute only-mobile">Corpo inteiro, ritmo natural, atenção gentil — um convite a regressar ao eixo.</p>
+            <h1>Toque Que Escuta</h1>
+            <p class="mute">Repouso, Recentramento, Regeneração</p>
+            <p class="mute only-mobile">
+              Corpo inteiro, ritmo natural, atenção gentil — um convite a regressar ao eixo.
+            </p>
           </div>
         </div>
       </div>
     </section>
-
+  
     <!-- CONTENT -->
     <div class="content wrap">
+  
+      <!-- icon2: first content divider after hero -->
       <div class="divider"><img src="icon2.svg" alt="" width="96" height="96" loading="lazy"></div>
-
-          <!-- Tratamentos -->
-    <section id="treat" class="flow" aria-label="Tratamentos">
-      <div>
-        <h2>Tratamentos</h2>
-
-        <ul>
-          <li>Zen Shiatsu · trabalho de meridianos e pressão rítmica</li>
-          <li>Acupressão (TCM) · pontos específicos para equilíbrio energético</li>
-          <li>Massagem Desportiva &amp; Reabilitação · tensão, mobilidade, retorno ao movimento</li>
-          <li>Cupping (Ventosaterapia) · libertação miofascial</li>
-          <li>Gua Sha · estímulo circulatório e relaxamento</li>
-        </ul>
-
-        <p class="mute">
-          Sessões de 60′ · roupa confortável · em maca ou futon, conforme necessidade.
-          <br>
-          Preferências/patologias? <a href="#cta">Fale comigo</a> para adaptar o tratamento.
-        </p>
-      </div>
-      <div class="ink-line line-fade" aria-hidden="true"></div>
-    </section>
-
-
+  
+      <!-- Tratamentos -->
+      <section id="treat" class="flow" aria-label="Tratamentos">
+        <div>
+          <h2>Tratamentos</h2>
+          <ul>
+            <li>Zen Shiatsu · trabalho de meridianos e pressão rítmica</li>
+            <li>Acupressão (TCM) · pontos específicos para equilíbrio energético</li>
+            <li>Massagem Desportiva &amp; Reabilitação · tensão, mobilidade, retorno ao movimento</li>
+            <li>Cupping (Ventosaterapia) · libertação miofascial</li>
+            <li>Gua Sha · estímulo circulatório e relaxamento</li>
+          </ul>
+          <p class="mute">
+            Sessões de 60′ · roupa confortável · em maca ou futon, conforme necessidade.
+            <br>
+            Preferências/patologias? <a href="#cta">Fale comigo</a> para adaptar o tratamento.
+          </p>
+        </div>
+        <div class="ink-line line-fade" aria-hidden="true"></div>
+      </section>
+  
+      <!-- Testemunhos -->
       <div class="reviews-grid" aria-label="Testemunhos">
-        <!-- Review 1 (your existing) -->
         <div class="review-col" role="blockquote" aria-label="Testemunho">
           <h3 class="review">
             O Manuel Pereira aborda as massagens de shiatsu com presença, atenção e respeito.
@@ -492,8 +508,7 @@
           </h3>
           <p class="review-sig mute">— Filipa Cordeiro (investigadora)</p>
         </div>
-      
-        <!-- Review 2 -->
+  
         <div class="review-col" role="blockquote" aria-label="Testemunho">
           <h3 class="review">
             Cheguei com tensão no pescoço e dor de cabeça frequente. A abordagem foi suave e
@@ -501,8 +516,7 @@
           </h3>
           <p class="review-sig mute">— João L., designer</p>
         </div>
-      
-        <!-- Review 3 -->
+  
         <div class="review-col" role="blockquote" aria-label="Testemunho">
           <h3 class="review">
             Senti um cuidado raro: escuta, ritmo e mãos seguras. O corpo abrandou e o sono
@@ -510,9 +524,26 @@
           </h3>
           <p class="review-sig mute">— Marta R., professora</p>
         </div>
-      </div>   
-
+      </div>
+  
+      <!-- icon3: transition into educational/what-is section -->
       <div class="divider"><img src="icon3.svg" alt="" width="96" height="96" loading="lazy"></div>
+  
+      <!-- O que é o Shiatsu -->
+      <section id="shiatsu" class="flow" aria-label="O que é o Shiatsu">
+        <div>
+          <h2>O que é o Shiatsu?</h2>
+          <p>“Tudo é mutação” pode ler-se no <em>I Ching</em>. Sob esse prisma, o Shiatsu (literalmente “pressão com os dedos”) acolhe as mudanças que experienciamos, na relação com os ciclos da Natureza à qual estamos intimamente conectados e de que nunca nos deveríamos afastar, e atua sobre os desequilíbrios do <em>Ki</em> (a energia vital, segundo os orientais), procurando aproximar-nos de um estado de maior harmonia.</p>
+          <p>Sendo uma forma privilegiada de ativar o sistema nervoso parassimpático, o toque do Shiatsu permite suspender por momentos o omnipresente domínio da nossa faceta racional, fazendo despontar uma sensibilidade que permite aceder a uma mais subtil dimensão humana.</p>
+          <p>Da Medicina Tradicional Chinesa importa-se a noção de Corpo, Mente e Espírito como uma só entidade em permanente comunicação. Nesse sentido, o Shiatsu incide sobre um muito amplo leque de sintomas: melhoria da circulação, da flexibilidade e da postura, melhoria da qualidade do sono, reforço do sistema imunitário, alívio da ansiedade e da fadiga, entre outros. Potencia, de igual modo, o tão necessário desaceleramento numa sociedade que celebra exatamente o oposto.</p>
+        </div>
+        <div class="ink-line line-fade" aria-hidden="true"></div>
+      </section>
+  
+      <!-- icon4: transition into practical info -->
+      <div class="divider"><img src="icon4.svg" alt="" width="96" height="96" loading="lazy"></div>
+  
+      <!-- Informações práticas (single #info) -->
       <section id="info" class="flow" aria-label="Informação">
         <div>
           <h2>Locais</h2>
@@ -526,15 +557,17 @@
         </div>
         <div class="ink-line line-fade" aria-hidden="true"></div>
       </section>
-
-      <div class="divider"><img src="icon4.svg" alt="" width="96" height="96" loading="lazy"></div>
-
+  
+      <!-- icon5: before CTA/contact -->
+      <div class="divider"><img src="icon5.svg" alt="" width="96" height="96" loading="lazy"></div>
+  
+      <!-- Contacto & Marcação -->
       <section id="contacto" class="flow" aria-label="Contacto & Marcação">
         <div>
           <h2>Contacto &amp; Marcação</h2>
           <p><strong>Manuel Pereira</strong> — Terapeuta de Zen Shiatsu</p>
         </div>
-
+  
         <div class="socials" aria-label="Contactos e redes">
           <a class="icon-link" href="tel:+351919973618" aria-label="Ligar 919 973 618">
             <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -542,7 +575,7 @@
             </svg>
             <span>919&nbsp;973&nbsp;618</span>
           </a>
-
+  
           <a class="icon-link" href="mailto:manuelpereira.shiatsu@gmail.com" aria-label="Enviar email">
             <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="1.5"/>
@@ -550,7 +583,7 @@
             </svg>
             <span>Email</span>
           </a>
-
+  
           <a class="icon-link" href="https://instagram.com/manuelpereira.shiatsu" target="_blank" rel="noopener" aria-label="Instagram">
             <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.5"/>
@@ -559,7 +592,7 @@
             </svg>
             <span>@manuelpereira.shiatsu</span>
           </a>
-
+  
           <a class="icon-link" href="https://maps.google.com/?q=Anjos+Lisboa" target="_blank" rel="noopener" aria-label="Ver no mapa">
             <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" stroke="currentColor" stroke-width="1.5"/>
@@ -568,10 +601,7 @@
             <span>Anjos · Lisboa</span>
           </a>
         </div>
-
-        <div class="divider"><img src="icon5.svg" alt="" width="96" height="96" loading="lazy"></div>
-
-
+  
         <section id="cta" class="flow" aria-label="Marcação rápida">
           <div class="wrap">
             <div class="cta-box">
@@ -579,7 +609,7 @@
                 <h2>Envie uma mensagem</h2>
                 <small>(respondo normalmente no próprio dia)</small>
               </div>
-        
+  
               <!-- Netlify Forms ready -->
               <form
                 name="contacto-site"
@@ -589,39 +619,37 @@
                 accept-charset="utf-8"
                 id="contactoForm"
               >
-                <!-- Netlify needs this hidden input -->
                 <input type="hidden" name="form-name" value="contacto-site" />
-                <!-- Honeypot -->
                 <div style="display:none">
                   <label>Não preencha: <input name="bot-field" /></label>
                 </div>
-        
+  
                 <div class="form-grid">
                   <div>
                     <label for="nome">Nome</label>
                     <input class="input" type="text" id="nome" name="nome" autocomplete="name" required />
                   </div>
-        
+  
                   <div>
                     <label for="email">Email</label>
                     <input class="input" type="email" id="email" name="email" autocomplete="email" required />
                   </div>
-        
+  
                   <div class="full">
                     <label for="mensagem">Mensagem</label>
                     <textarea class="textarea" id="mensagem" name="mensagem" required></textarea>
                   </div>
-        
+  
                   <div class="full form-row-inline">
                     <input type="checkbox" id="consent" name="consent" required />
                     <label for="consent">Autorizo ser contactado para resposta à minha mensagem.</label>
                   </div>
-        
+  
                   <div class="full" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
                     <button type="submit" class="btn" id="sendBtn">Enviar</button>
                     <span class="form-note">ou envie diretamente para <a href="mailto:manuelpereira.shiatsu@gmail.com">manuelpereira.shiatsu@gmail.com</a></span>
                   </div>
-        
+  
                   <div class="full">
                     <div id="formStatus" class="status" aria-live="polite"></div>
                   </div>
@@ -630,11 +658,10 @@
             </div>
           </div>
         </section>
-  
       </section>
     </div>
   </main>
-
+  
   <!-- Footer -->
   <footer>
     <div class="footer-inner">
@@ -644,13 +671,14 @@
       <div class="footnote">© <span id="year"></span> Manuel Pereira Shiatsu</div>
       <div class="ink-line line-fade" aria-hidden="true"></div>
       <div class="footer-quote">
-Não há ponte entre duas margens,
-só quem habita a corrente
-pode aspirar a todas as moradas.
-Vasco Gato “Imo”
+        Não há ponte entre duas margens,
+        só quem habita a corrente
+        pode aspirar a todas as moradas.
+        Vasco Gato
       </div>
     </div>
   </footer>
+  
 
   <!-- Back-to-top chevron -->
   <button id="toTop" type="button" aria-label="Voltar ao topo" title="Topo">
