@@ -1,0 +1,40 @@
+{
+  "id": "/",
+  "name": "Manuel Pereira Shiatsu — Zen Shiatsu",
+  "short_name": "Zen Shiatsu",
+  "lang": "pt-PT",
+  "dir": "ltr",
+  "description": "Shiatsu enraizado em TCM. Toque antigo, calma moderna.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#c8c88f",
+  "background_color": "#c8c88f",
+  "icons": [
+    { "src": "/icons/favicon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/favicon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable any" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Tratamentos",
+      "short_name": "Tratamentos",
+      "url": "/index.html#treat",
+      "icons": [{ "src": "/icons/favicon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "O que é o Shiatsu?",
+      "short_name": "Shiatsu",
+      "url": "/index.html#shiatsu",
+      "icons": [{ "src": "/icons/favicon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Contacto",
+      "short_name": "Contacto",
+      "url": "/index.html#contacto",
+      "icons": [{ "src": "/icons/favicon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ],
+  "categories": ["health", "wellness", "lifestyle"]
+}

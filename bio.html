@@ -4,7 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Biografia — Manuel Pereira · Zen Shiatsu</title>
-
+  <!-- Icons / PWA -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="/icon.svg">
+  <link rel="icon" type="image/png" href="/icons/favicon-32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/icons/favicon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#c8c88f">
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,6 +22,98 @@
   <link rel="preload" as="image" href="icon1.svg">
   <link rel="preload" as="image" href="logo.svg">
   <link rel="preload" as="image" href="4.webp" type="image/webp">
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://manuelpereira-shiatsu.example/#website",
+          "url": "https://manuelpereira-shiatsu.example/",
+          "name": "Manuel Pereira Shiatsu — Zen Shiatsu",
+          "inLanguage": "pt-PT",
+          "publisher": { "@id": "https://manuelpereira-shiatsu.example/#org" }
+        },
+        {
+          "@type": "AboutPage",
+          "@id": "https://manuelpereira-shiatsu.example/bio.html#webpage",
+          "url": "https://manuelpereira-shiatsu.example/bio.html",
+          "name": "Biografia — Manuel Pereira · Zen Shiatsu",
+          "description": "Percurso, prática e presença pelo toque.",
+          "isPartOf": { "@id": "https://manuelpereira-shiatsu.example/#website" },
+          "inLanguage": "pt-PT",
+          "primaryImageOfPage": {
+            "@type": "ImageObject",
+            "url": "https://manuelpereira-shiatsu.example/bio.webp"
+          },
+          "breadcrumb": { "@id": "https://manuelpereira-shiatsu.example/bio.html#breadcrumbs" }
+        },
+        {
+          "@type": "Person",
+          "@id": "https://manuelpereira-shiatsu.example/#person",
+          "name": "Manuel Pereira",
+          "image": "https://manuelpereira-shiatsu.example/bio.webp",
+          "jobTitle": "Terapeuta de Zen Shiatsu",
+          "url": "https://manuelpereira-shiatsu.example/bio.html",
+          "worksFor": { "@id": "https://manuelpereira-shiatsu.example/#org" },
+          "telephone": "+351919973618",
+          "email": "mailto:manuelpereira.shiatsu@gmail.com",
+          "sameAs": [
+            "https://instagram.com/manuelpereira.shiatsu"
+          ],
+          "knowsAbout": [
+            "Zen Shiatsu",
+            "Acupressão (TCM)",
+            "Massagem Desportiva e de Reabilitação",
+            "Ventosaterapia (Cupping)",
+            "Gua Sha"
+          ],
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Lisboa",
+            "addressCountry": "PT"
+          }
+        },
+        {
+          "@type": "HealthAndBeautyBusiness",
+          "@id": "https://manuelpereira-shiatsu.example/#org",
+          "name": "Manuel Pereira Shiatsu",
+          "url": "https://manuelpereira-shiatsu.example/",
+          "image": "https://manuelpereira-shiatsu.example/og-1200x630.jpg",
+          "logo": "https://manuelpereira-shiatsu.example/icon.svg",
+          "priceRange": "€€",
+          "telephone": "+351919973618",
+          "hasMap": "https://maps.google.com/?q=Anjos+Lisboa",
+          "areaServed": { "@type": "AdministrativeArea", "name": "Lisboa e arredores" },
+          "sameAs": [ "https://instagram.com/manuelpereira.shiatsu" ],
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Lisboa",
+            "addressCountry": "PT"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://manuelpereira-shiatsu.example/bio.html#breadcrumbs",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Início",
+              "item": "https://manuelpereira-shiatsu.example/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Biografia",
+              "item": "https://manuelpereira-shiatsu.example/bio.html"
+            }
+          ]
+        }
+      ]
+    }
+    </script> 
 
   <style>
     :root{
@@ -298,6 +397,17 @@
         <h2>Contacto &amp; Marcação</h2>
         <p><strong>Manuel Pereira</strong> — Terapeuta de Zen Shiatsu</p>
       </div>
+      <div class="socials" aria-label="Contactos e redes">
+        <!-- WhatsApp -->
+        <a class="icon-link" href="https://wa.me/351919973618" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M20.5 11.8c0 4.7-3.9 8.5-8.7 8.5-1.5 0-2.9-.4-4.1-1l-3.2.8.9-3.1c-1-1.3-1.6-3-1.6-4.8C3.8 7.6 7.6 3.8 12 3.8s8.5 3.8 8.5 8z"
+                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M15.9 14.1c-.3-.1-1.1-.5-1.4-.6-.3-.1-.5-.1-.7.2l-.6.7c-.1.2-.4.2-.6.1-1.1-.5-2.1-1.3-2.8-2.3-.1-.2-.1-.5.1-.6l.6-.7c.2-.2.2-.4.1-.7-.1-.3-.5-1.1-.6-1.4-.2-.3-.4-.3-.7-.3h-.6c-.3 0-.6.2-.8.4-.8.8-.8 2.2 0 3.6 1.2 2.2 3.3 3.7 5.7 4.3.9.2 2 .1 2.7-.6.2-.2.4-.5.4-.8v-.6c0-.3 0-.5-.3-.7Z"
+                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>WhatsApp</span>
+        </a>
 
       <div class="socials" aria-label="Contactos e redes">
         <a class="icon-link" href="tel:+351919973618" aria-label="Ligar 919 973 618">
@@ -331,6 +441,7 @@
           </svg>
           <span>Anjos · Lisboa</span>
         </a>
+      </div>
       </div>
     </section>
   </main>
